@@ -1,0 +1,407 @@
+<?xml version="1.0"?>
+<project name="WebTester" default="build">
+
+  <!-- Configuration - default values that can be changed depending on the situation, can be changed in local.properties.xml -->
+  <property name="configuration" value="Debug" />
+  <property name="complexity.limit" value="3" />
+  <property name="nesting.limit" value="4" />
+  <property name="methods.limit" value="5" />
+  <property name="lines.limit" value="200" />
+  <property name="version.major" value="0" />
+  <property name="version.minor" value="2" />
+  <property name="version.build" value="0" />
+
+  <!-- External executable locations - depends on environment, can be changed in local.properties.xml -->
+  <property name="msbuild" value="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" />
+  <property name="svn" value="C:\Program Files (x86)\VisualSVN Server\bin\svn.exe" />
+  <property name="FxCop"
+    value="C:\Program Files (x86)\Microsoft FxCop 1.36\FxCopCmd.exe" />
+  <property name="appcmd" value="c:\Windows\System32\inetsrv\appcmd" />
+
+  <!-- Working values and built-in values - need not be changed -->
+  <property name="nunit.executable" value="lib\NUnit\nunit-console.exe" />
+  <property name="codemetrics.output.dir" value="build" />
+  <property name="sourcemonitor.executable" value="lib\SourceMonitor\SourceMonitor.exe" />
+  <property name="website.path" value="${project::get-base-directory()}\src\Uncas.WebTester.Web" />
+  <property name="website.name" value="WebTesterWeb" />
+  <property name="website.port" value="963" />
+
+  <!-- Local properties, that overrides the ones from above -->
+  <if test="${file::exists('local.properties.xml')}">
+    <echo message="Loading local.properties.xml" />
+    <include buildfile="local.properties.xml" />
+  </if>
+
+  <target name="all" />
+
+  <target name="cleanProject">
+    <delete dir="${projectFolder}\bin" failonerror="false" />
+    <delete dir="${projectFolder}\obj" failonerror="false" />
+  </target>
+
+  <target name="clean" failonerror="false">
+    <delete dir="build" failonerror="false" />
+    <property name="projectFolder" value="src\Uncas.WebTester" />
+    <call target="cleanProject" />
+    <property name="projectFolder" value="src\Uncas.WebTester.ConsoleApp" />
+    <call target="cleanProject" />
+    <property name="projectFolder" value="src\Uncas.WebTester.ConsoleApp" />
+    <call target="cleanProject" />
+    <property name="projectFolder" value="src\Uncas.WebTester.Web" />
+    <call target="cleanProject" />
+    <property name="projectFolder" value="src\Uncas.WebTester.WatiNBrowserUtility" />
+    <call target="cleanProject" />
+    <property name="projectFolder" value="test\Uncas.WebTester.Tests.Unit" />
+    <call target="cleanProject" />
+    <property name="projectFolder" value="test\Uncas.WebTester.Tests.Integration" />
+    <call target="cleanProject" />
+  </target>
+
+  <target name="cleanAll"
+      depends="clean"
+      description="remove all build products">
+  </target>
+
+  <target name="init" depends="clean">
+    <mkdir dir="build" />
+    <call target="initializeConfigFiles" />
+  </target>
+
+  <target name="build"
+      depends="init,generateVersionInfoFile"
+      description="compiles (msbuild) the solution (.sln file)">
+    <exec program="${msbuild}"
+        commandline="/p:Configuration=${configuration} Uncas.WebTester.sln" />
+  </target>
+
+  <target name="test" depends="unitTest,integrationTest" />
+
+  <target name="unitTest" depends="build,unitTestProperties">
+    <call target="baseTest" />
+  </target>
+  <target name="unitTestProperties">
+    <property
+      name="TestProjectName"
+      value="Uncas.WebTester.Tests.Unit" />
+  </target>
+
+  <target name="integrationTest" depends="build,integrationTestNoBuild" />
+  <target name="integrationTestNoBuild" depends="integrationTestProperties,setupWebsite">
+    <call target="baseTest" />
+  </target>
+  <target name="integrationTestProperties">
+    <property
+      name="TestProjectName"
+      value="Uncas.WebTester.Tests.Integration" />
+  </target>
+
+  <target name="baseTest">
+    <property name="TestAssemblyDirectoryPath" value="test\${TestProjectName}\bin\${configuration}" />
+    <property name="TestAssemblyFileName" value="${TestProjectName}.dll" />
+    <property name="TestResultFileName" value="${TestProjectName}.TestResult.xml" />
+    <property name="test.directory" value="build\test" />
+    <copy todir="${test.directory}">
+      <fileset basedir="${TestAssemblyDirectoryPath}">
+        <include name="*.*" />
+      </fileset>
+    </copy>
+    <copy todir="${test.directory}">
+      <fileset basedir="lib\NUnit">
+        <include name="**\*.*" />
+      </fileset>
+    </copy>
+    <echo message="Testing ${TestProjectName}" />
+    <exec program="${test.directory}\nunit-console.exe"
+      workingdir="${test.directory}"
+      commandline="${TestAssemblyFileName} /framework=4.0.30319 /xml=${TestResultFileName}">
+    </exec>
+    <if test="${property::exists('CCNetArtifactDirectory')}">
+      <copy file="${test.directory}\${TestResultFileName}" 
+        todir="${CCNetArtifactDirectory}\testresults" overwrite="true" />
+    </if>
+  </target>
+
+  <target name="getSubversionRevision" depends="init">
+    <!-- Retrieve subversion revision number -->
+    <echo message="Retrieving Subversion revision number" />
+    <property name="svn.revision" value="0" />
+    <exec
+      program="${svn}"
+      commandline='log --xml --limit 1 --username buildmaster --password buildmaster123 --no-auth-cache'
+      output="build\revision.xml"
+      failonerror="false" />
+    <xmlpeek
+      file="build\revision.xml"
+      xpath="/log/logentry/@revision"
+      property="svn.revision"
+      failonerror="false" />
+    <echo message="Using Subversion revision number: ${svn.revision}" />
+  </target>
+
+  <!-- From http://www.richard-banks.org/2007/06/real-world-cruisecontrolnet-setup.html
+       and http://www.ridgway.co.za/archive/2006/11/28/usefulsourcemonitorreportsincruisecontrol.aspx -->
+  <target name="SourceMonitor" depends="getSubversionRevision">
+    <!-- Create input command file -->
+    <property name="sourcemonitor.input" value="${codemetrics.output.dir}\sm_xxxx_cmd.xml" />
+    <echo file="${sourcemonitor.input}" append="false" failonerror="false">
+      <![CDATA[
+      <?xml version="1.0" encoding="UTF-8" ?>
+      <sourcemonitor_commands>
+       <write_log>true</write_log>
+       <command>
+        <project_file>${codemetrics.output.dir}\sm_xxxx.smp</project_file>
+        <project_language>CSharp</project_language>
+        <file_extensions>*.cs|*.Designer.cs,*.feature.cs</file_extensions>
+        <source_directory>${project::get-base-directory()}\src</source_directory>
+        <include_subdirectories>true</include_subdirectories>
+        <checkpoint_name>${svn.revision}</checkpoint_name>
+        <export>
+         <export_file>${project::get-base-directory()}\_sm_summary.xml</export_file>
+         <export_type>1</export_type>
+        </export>
+       </command>
+       <command>
+        <project_file>${codemetrics.output.dir}\sm_xxxx.smp</project_file>
+        <checkpoint_name>${svn.revision}</checkpoint_name>
+        <export>
+         <export_file>${project::get-base-directory()}\_sm_details.xml</export_file>
+         <export_type>2</export_type>
+        </export>
+       </command>
+      </sourcemonitor_commands>
+      ]]>
+     </echo>
+    <!-- Execute the commands -->
+    <exec program="${sourcemonitor.executable}"
+      commandline="/C ${sourcemonitor.input}"
+      failonerror="false" />
+    <style style="SourceMonitor-Top15Generation.xsl"
+      in="${project::get-base-directory()}\_sm_details.xml"
+      out="${project::get-base-directory()}\_sm_top15.xml" />
+    <delete file="${codemetrics.output.dir}\sm_xxxx.smp" failonerror="false" />
+  </target>
+
+  <target name="CheckSourceMonitorOutput" depends="SourceMonitor">
+    <xmlpeek
+      file="${project::get-base-directory()}\_sm_top15.xml"
+      xpath="/SourceMonitorComplexitySummary/MostComplexMethods/Method/Complexity"
+      nodeindex="0"
+      property="complexity.max" />
+    <xmlpeek
+      file="${project::get-base-directory()}\_sm_top15.xml"
+      xpath="/SourceMonitorComplexitySummary/MostComplexMethods/Method/File"
+      nodeindex="0"
+      property="complexity.file" />
+    <xmlpeek
+      file="${project::get-base-directory()}\_sm_top15.xml"
+      xpath="/SourceMonitorComplexitySummary/MostComplexMethods/Method/Line"
+      nodeindex="0"
+      property="complexity.line" />
+    <xmlpeek
+      file="${project::get-base-directory()}\_sm_top15.xml"
+      xpath="/SourceMonitorComplexitySummary/MostDeeplyNestedCode/Block/Depth"
+      nodeindex="0"
+      property="nesting.max" />
+    <xmlpeek
+      file="${project::get-base-directory()}\_sm_top15.xml"
+      xpath="/SourceMonitorComplexitySummary/MostLines/File/Lines"
+      nodeindex="0"
+      property="lines.max" />
+    <xmlpeek
+      file="${project::get-base-directory()}\_sm_top15.xml"
+      xpath="/SourceMonitorComplexitySummary/MostMethods/File/Methods"
+      nodeindex="0"
+      property="methods.max" />
+    <echo message="Max complexity: ${complexity.max}. Max nesting: ${nesting.max}. Max lines: ${lines.max}. Max methods: ${methods.max}." />
+    <if test="${nesting.max > nesting.limit}">
+      <fail message="Too large nesting." />
+    </if>
+    <if test="${complexity.max > complexity.limit}">
+      <fail message="Too large complexity in ${complexity.file} line ${complexity.line}." />
+    </if>
+    <if test="${lines.max > lines.limit}">
+      <fail message="Too many lines." />
+    </if>
+  </target>
+
+  <target name="FxCop" depends="build,FxCopNoBuild" />
+  <target name="FxCopNoBuild">
+    <property name="FxCop.output" value="build\fxcopresults.xml" />
+    <delete file="${FxCop.output}" />
+    <exec program="${FxCop}"
+      commandline="/p:WebTester.FxCop /o:${FxCop.output} /s"
+      failonerror="false"/>
+    <if test="${file::exists(FxCop.output)}">
+      <echo message="FxCop errors encountered" />
+      <loadfile file="${FxCop.output}" property="FxCop.contents" />
+      <echo message="${FxCop.contents}" />
+      <fail message="FxCop errors encountered" />
+    </if>
+    <echo message="FxCop says OK!" />
+  </target>
+
+  <target name="SvnUpdate">
+    <exec program="${svn}">
+      <arg value="update" />
+    </exec>
+  </target>
+
+  <target name="PrepareCommit"
+    depends="SvnUpdate,CheckSourceMonitorOutput,test,FxCop">
+    <echo message="Build, tests, specs, FxCop, and source monitor says OK!" />
+  </target>
+
+  <target name="generateVersionInfoFile" depends="getSubversionRevision">
+    <if test="${property::exists('CCNetLabel')}">
+      <property name="version.build" value="${CCNetLabel}" />
+    </if>
+    <property name="version.string" value="${version.major}.${version.minor}.${version.build}.${svn.revision}" />
+    <asminfo output="src\VersionInfo.cs" language="CSharp">
+      <attributes>
+        <attribute type="System.Reflection.AssemblyCompanyAttribute" value="Uncas" />
+        <attribute type="System.Reflection.AssemblyProductAttribute" value="Uncas.WebTester" />
+        <attribute type="System.Reflection.AssemblyCopyrightAttribute" value="Copyright (c) 2010, Ole Lynge Sørensen" />
+        <attribute type="System.Reflection.AssemblyVersionAttribute" value="${version.string}" />
+        <attribute type="System.Reflection.AssemblyFileVersionAttribute" value="${version.string}" />
+      </attributes>
+    </asminfo>
+  </target>
+
+  <target name="SetReleaseConfiguration">
+    <property name="configuration" value="Release" />
+  </target>
+
+  <target name="package" depends="SetReleaseConfiguration,SvnUpdate,getSubversionRevision,build,packageNoBuild" />
+  <target name="packageNoBuild">
+    <property name="package.dir" value="build\Uncas.WebTester" />
+    <copy todir="${package.dir}">
+      <fileset basedir="src\Uncas.WebTester.ConsoleApp\bin\Release">
+        <include name="*.*" />
+        <exclude name="*.pdb" />
+        <exclude name="Html*.xml" />
+        <exclude name="Microsoft*.xml" />
+        <exclude name="nunit*.xml" />
+      </fileset>
+    </copy>
+    <copy todir="${package.dir}">
+      <fileset basedir="src\Uncas.WebTester.NUnitRunner\bin\Release">
+        <include name="*.*" />
+        <exclude name="*.pdb" />
+        <exclude name="Html*.xml" />
+        <exclude name="Microsoft*.xml" />
+        <exclude name="nunit*.xml" />
+      </fileset>
+    </copy>
+    <copy todir="${package.dir}">
+      <fileset basedir="test\Uncas.WebTester.Tests.SimpleTestProject\bin\Release">
+        <include name="*.*" />
+        <exclude name="*.pdb" />
+        <exclude name="Html*.xml" />
+        <exclude name="Microsoft*.xml" />
+        <exclude name="nunit*.xml" />
+      </fileset>
+    </copy>
+    <property name="zipfile.name" value="Uncas.WebTester-${version.string}.zip" />
+    <property name="zipfile.path" value="build\${zipfile.name}" />
+    <zip zipfile="${zipfile.path}">
+      <fileset basedir="${package.dir}">
+        <include name="**/*" />
+      </fileset>
+    </zip>
+    <if test="${property::exists('CCNetArtifactDirectory')}">
+      <copy file="${zipfile.path}" todir="${CCNetArtifactDirectory}\packages" overwrite="true" />
+    </if>
+  </target>
+
+  <target name="deploy" depends="package,deployBase" />
+  <target name="deployNoBuild" depends="packageNoBuild,deployBase" />
+  <target name="deployBase">
+    <copy file="Default.htm.template" tofile="build\WebTester.htm">
+      <filterchain>
+        <replacetokens>
+          <token key="ZIPFILENAME" value="${zipfile.name}" />
+          <token key="ZIPFILEDATE" value="${datetime::now()} (${version.string})" />
+        </replacetokens>
+      </filterchain>
+    </copy>
+    <property name="deployfile.name" value="build/Deploy.txt" />
+    <echo file="${deployfile.name}">${ftp.username}
+${ftp.password}
+cd test
+put build/${zipfile.name}
+put build/WebTester.htm
+quit
+    </echo>
+    <exec program="ftp">
+      <arg value="-s:${deployfile.name}" />
+      <arg value="${ftp.host}" />
+    </exec>
+  </target>
+
+  <target name="setupWebsite">
+    <exec program="${appcmd}" failonerror="false">
+      <arg value="delete" />
+      <arg value="site" />
+      <arg value="${website.name}" />
+    </exec>
+    <exec program="${appcmd}">
+      <arg value="add" />
+      <arg value="site" />
+      <arg value="/name:${website.name}" />
+      <arg value="/bindings:http://*:${website.port}" />
+      <arg value="/physicalPath:${website.path}" />
+    </exec>
+    <exec program="${appcmd}">
+      <arg value="set" />
+      <arg value="site" />
+      <arg value="${website.name}" />
+      <arg value="/applicationDefaults.applicationPool:&quot;ASP.NET v4.0&quot;" />
+    </exec>
+  </target>
+
+  <target name="initializeConfigFiles">
+    <copy 
+      file="config\IntegrationTests.appSettings.config.template"
+      tofile="test\Uncas.WebTester.Tests.Integration\App.appSettings.config"
+      overwrite="true">
+      <filterchain>
+        <replacetokens>
+          <token key="WebsitePort" value="${website.port}" />
+        </replacetokens>
+      </filterchain>
+    </copy>
+  </target>
+
+  <property name="ncover.executable" value="C:\Program Files (x86)\TestDriven.NET 3\NCover\1.5.8\NCover.Console.exe" />
+  <property name="ncover.stylesheet" value="C:\Program Files (x86)\TestDriven.NET 3\NCover\1.5.8\Coverage.xsl" />
+  <property value="C:\ProjectsDirectory" name="projects.output.dir"/>
+
+  <target name="code-coverage">
+    <property name="assembly.test.name" value="Uncas.WebTester.Tests.Unit" />
+    <property name="ncover.path.arg"
+      value="test\${assembly.test.name}\bin\Debug\${assembly.test.name}.dll //l Reports\Coverage.Log //a ${assembly.test.name}" />
+    <exec program="${ncover.executable}" commandline="${nunit.executable} /framework=4.0.30319 ${ncover.path.arg}" />
+    <style style="{ncover.stylesheet}" out="Reports\${assembly.test.name}-Coverage.html" in="Coverage.xml$" />
+  </target>
+
+  <target name="createTag" depends="getSubversionRevision">
+    <property name="buildNumber" value="0" />
+    <if test="${property::exists('CCNetLabel')}">
+      <property name="buildNumber" value="${CCNetLabel}" />
+    </if>
+    <property name="repositoryUrl" value="http://aragorn:81/svn/dev/projects/Uncas.WebTester" />
+    <exec program="${svn}">
+      <arg value="copy" />
+      <arg value="${repositoryUrl}/trunk" />
+      <arg value="${repositoryUrl}/tags/integration-${svn.revision}-${buildNumber}" />
+      <arg value="--username" />
+      <arg value="buildmaster" />
+      <arg value="--password" />
+      <arg value="buildmaster123" />
+      <arg value="--no-auth-cache" />
+      <arg value="-m" />
+      <arg value="&quot;Tagging build.&quot;" />
+    </exec>
+  </target>
+
+</project>

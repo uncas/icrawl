@@ -1,0 +1,3 @@
+﻿<appSettings>
+  <add key="website.port" value="@WebsitePort@" />
+</appSettings>

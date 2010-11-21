@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F96DA2E3-633E-4E01-96C3-FF3B2BFC2F6E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Uncas.WebTester.Tests.Integration</RootNamespace>
+    <AssemblyName>Uncas.WebTester.Tests.Integration</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Moq, Version=3.1.416.3, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Moq\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NUnit\framework\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationServices\CrawlerServiceTests.cs" />
+    <Compile Include="Infrastructure\ConfigFileParserTests.cs" />
+    <Compile Include="NUnitRunner\NUnitCrawlerTestsDba.cs" />
+    <Compile Include="NUnitRunner\NUnitCrawlerTestsZenUncasDk.cs" />
+    <Compile Include="NUnitRunner\NUnitCrawlerTestsWwwUncasDk.cs" />
+    <Compile Include="Infrastructure\BaseSqlAdoTests.cs" />
+    <Compile Include="IntegrationTestHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Sql\SqlHelperTests.cs" />
+    <Compile Include="Repositories\Sql\SqlResultRepositoryTests.cs" />
+    <Compile Include="Repositories\Sql\SqlLogEntryRepositoryTests.cs" />
+    <Compile Include="Repositories\Sql\SqlUrlListProviderTests.cs" />
+    <Compile Include="Utilities\BrowserUtilityTests.cs" />
+    <Compile Include="Utilities\BrowserUtilityIntegrationTestsBase.cs" />
+    <Compile Include="Utilities\HtmlAgilityBrowserUtilityTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Uncas.WebTester.NUnitRunner\Uncas.WebTester.NUnitRunner.csproj">
+      <Project>{33AF00C1-B1BF-42C2-8476-35BF6BD58D15}</Project>
+      <Name>Uncas.WebTester.NUnitRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Uncas.WebTester.WatiNBrowserUtility\Uncas.WebTester.WatiNBrowserUtility.csproj">
+      <Project>{76C862EE-A390-45D7-8564-BB92C5A16200}</Project>
+      <Name>Uncas.WebTester.WatiNBrowserUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Uncas.WebTester\Uncas.WebTester.csproj">
+      <Project>{8D52F332-16D6-4AB0-95D2-559C56393233}</Project>
+      <Name>Uncas.WebTester</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Uncas.WebTester.Tests.Unit\Uncas.WebTester.Tests.Unit.csproj">
+      <Project>{12E188C5-EFCE-4E2C-97A7-C62928649DD3}</Project>
+      <Name>Uncas.WebTester.Tests.Unit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

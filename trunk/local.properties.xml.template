@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<properties>
+
+  <property name="ftp.host" value="" />
+  <property name="ftp.username" value="" />
+  <property name="ftp.password" value="" />
+
+</properties>

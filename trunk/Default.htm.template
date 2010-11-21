@@ -1,0 +1,11 @@
+<html>
+<head>
+  <title>Uncas WebTester</title>
+</head>
+<body>
+  <h1>Uncas WebTester</h1>
+  <p>
+    <a href="@ZIPFILENAME@">Download latest version from @ZIPFILEDATE@.</a>
+  </p>
+</body>
+</html>

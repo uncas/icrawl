@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8D52F332-16D6-4AB0-95D2-559C56393233}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Uncas.WebTester</RootNamespace>
+    <AssemblyName>Uncas.WebTester</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Uncas.WebTester.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Uncas.WebTester.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\WebTesterKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\lib\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="ApplicationServices\NullResultService.cs" />
+    <Compile Include="ApplicationServices\ResultService.cs" />
+    <Compile Include="ApplicationServices\CrawlerService.cs" />
+    <Compile Include="ApplicationServices\ICrawlerService.cs" />
+    <Compile Include="ApplicationServices\CrawlConfiguration.cs" />
+    <Compile Include="ApplicationServices\ILoggerService.cs" />
+    <Compile Include="ApplicationServices\IResultService.cs" />
+    <Compile Include="ApplicationServices\IUrlListCheckerService.cs" />
+    <Compile Include="ApplicationServices\LoggerService.cs" />
+    <Compile Include="Infrastructure\CommandLineParser.cs" />
+    <Compile Include="Infrastructure\ConfigFileParser.cs" />
+    <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Repositories\ILogEntryRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\IResultRepository.cs" />
+    <Compile Include="Repositories\IUrlListProvider.cs" />
+    <Compile Include="ApplicationServices\NavigateHelper.cs" />
+    <Compile Include="Repositories\Sql\SqlHelper.cs" />
+    <Compile Include="Repositories\Sql\SqlResultRepository.cs" />
+    <Compile Include="Repositories\Sql\SqlUrlListProvider.cs" />
+    <Compile Include="ApplicationServices\UrlListCheckerService.cs" />
+    <Compile Include="Infrastructure\BaseSqlAdo.cs" />
+    <Compile Include="Models\HyperLink.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Sql\SqlLogEntryRepository.cs" />
+    <Compile Include="Utilities\HtmlAgilityBrowserUtility.cs" />
+    <Compile Include="Utilities\IBrowserUtility.cs" />
+    <Compile Include="Utilities\NavigateResult.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\WebTesterKey.snk">
+      <Link>WebTesterKey.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
