@@ -29,13 +29,7 @@
         protected override IList<Uri> GetBaseUrls()
         {
             var result = new List<Uri>();
-
             result.Add(new Uri("http://www.uncas.dk"));
-
-            // result.Add(new Uri("http://zen.uncas.dk"));
-            // result.Add(new Uri("http://olelynge.blogspot.com"));
-            // result.Add(new Uri("http://dbaweb.mercury.integration.dba.dk"));
-            // result.Add(new Uri("http://dbaweb.mercury.integration.dba.dk/soeg/?soeg=sko"));
             return result;
         }
     }

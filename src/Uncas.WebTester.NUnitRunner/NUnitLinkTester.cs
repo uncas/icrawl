@@ -20,10 +20,6 @@ namespace Uncas.WebTester.NUnitRunner
     /// <summary>
     /// Crawler integration with NUnit.
     /// </summary>
-    /// <remarks>
-    /// CrawlerService crawls, starting from some base urls,
-    /// matching a range of urls, up to a maximum number of pages.
-    /// </remarks>
     [TestFixture]
     public abstract class NUnitLinkTester : IResultService
     {
@@ -112,8 +108,7 @@ namespace Uncas.WebTester.NUnitRunner
         /// <param name="link">The hyper link.</param>
         public void ProcessResult(HyperLink link)
         {
-            bool isOk = this.IsLinkOk(link);
-            if (!isOk)
+            if (!this.IsLinkOk(link))
             {
                 this.failedLinks.Add(link);
             }
@@ -136,12 +131,17 @@ namespace Uncas.WebTester.NUnitRunner
         /// </summary>
         private void WriteFailure()
         {
-            Assert.Fail("There were failed pages:");
+            var messageBuilder = new StringBuilder("There were failed pages:");
             foreach (var page in this.failedLinks)
             {
-                Console.WriteLine(
-                    page.StatusCode + ": " + page.Url.AbsoluteUri);
+                messageBuilder.AppendFormat(
+                    "{0}{1}: {2}",
+                    Environment.NewLine,
+                    page.StatusCode,
+                    page.Url.AbsoluteUri);
             }
+
+            Assert.Fail(messageBuilder.ToString());
         }
 
         /// <summary>

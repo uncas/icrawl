@@ -8,7 +8,7 @@
     [TestFixture]
     public class CrawlerServiceTests
     {
-        private readonly Uri ExistingUrl = new Uri("http://www.dba.dk");
+        private readonly Uri ExistingUrl = new Uri("http://www.uncas.dk");
 
         private ICrawlerService service;
 

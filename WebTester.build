@@ -240,14 +240,8 @@
     <echo message="FxCop says OK!" />
   </target>
 
-  <target name="SvnUpdate">
-    <exec program="${svn}">
-      <arg value="update" />
-    </exec>
-  </target>
-
   <target name="PrepareCommit"
-    depends="SvnUpdate,CheckSourceMonitorOutput,test,FxCop">
+    depends="CheckSourceMonitorOutput,test,FxCop">
     <echo message="Build, tests, specs, FxCop, and source monitor says OK!" />
   </target>
 
@@ -271,7 +265,7 @@
     <property name="configuration" value="Release" />
   </target>
 
-  <target name="package" depends="SetReleaseConfiguration,SvnUpdate,getSubversionRevision,build,packageNoBuild" />
+  <target name="package" depends="SetReleaseConfiguration,getSubversionRevision,build,packageNoBuild" />
   <target name="packageNoBuild">
     <property name="package.dir" value="build\Uncas.WebTester" />
     <copy todir="${package.dir}">
@@ -382,26 +376,6 @@ quit
       value="test\${assembly.test.name}\bin\Debug\${assembly.test.name}.dll //l Reports\Coverage.Log //a ${assembly.test.name}" />
     <exec program="${ncover.executable}" commandline="${nunit.executable} /framework=4.0.30319 ${ncover.path.arg}" />
     <style style="{ncover.stylesheet}" out="Reports\${assembly.test.name}-Coverage.html" in="Coverage.xml$" />
-  </target>
-
-  <target name="createTag" depends="getSubversionRevision">
-    <property name="buildNumber" value="0" />
-    <if test="${property::exists('CCNetLabel')}">
-      <property name="buildNumber" value="${CCNetLabel}" />
-    </if>
-    <property name="repositoryUrl" value="http://aragorn:81/svn/dev/projects/Uncas.WebTester" />
-    <exec program="${svn}">
-      <arg value="copy" />
-      <arg value="${repositoryUrl}/trunk" />
-      <arg value="${repositoryUrl}/tags/integration-${svn.revision}-${buildNumber}" />
-      <arg value="--username" />
-      <arg value="buildmaster" />
-      <arg value="--password" />
-      <arg value="buildmaster123" />
-      <arg value="--no-auth-cache" />
-      <arg value="-m" />
-      <arg value="&quot;Tagging build.&quot;" />
-    </exec>
   </target>
 
 </project>
