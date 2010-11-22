@@ -20,7 +20,6 @@ namespace Uncas.WebTester.NUnitRunner
     /// <summary>
     /// Crawler integration with NUnit.
     /// </summary>
-    [TestFixture]
     public abstract class NUnitLinkTester : IResultService
     {
         /// <summary>
