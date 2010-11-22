@@ -1,2 +1,2 @@
 @echo off
-lib\nant\NAnt.exe -buildfile:WebTester.build %*
+"c:\program files (x86)\nant\NAnt.exe" -buildfile:WebTester.build %*
