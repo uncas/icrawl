@@ -60,6 +60,7 @@
     <Compile Include="Stubs\StubUrlListProvider.cs" />
     <Compile Include="Utilities\BrowserUtilityTests.cs" />
     <Compile Include="Utilities\BrowserUtilityTestsBase.cs" />
+    <Compile Include="Utilities\NavigateResultTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Uncas.WebTester\Uncas.WebTester.csproj">

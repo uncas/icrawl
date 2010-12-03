@@ -50,5 +50,18 @@
 
             Assert.That(value, Is.EqualTo(DefaultPort));
         }
+
+        [Test]
+        public void GetInt32Value_WhenConfigNameFound_ReturnsFoundValue()
+        {
+            const int DefaultPort = 987;
+
+            int value = 
+                ConfigFileParser.GetInt32Value(
+                "website.port", 
+                DefaultPort);
+
+            Assert.AreEqual(963, value);
+        }
     }
 }

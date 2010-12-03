@@ -102,5 +102,25 @@
                 result,
                 Is.StringContaining("http://www.uncas.dk"));
         }
+
+        [Test]
+        public void ChangeMaxVisits_To10_IsChangedTo10()
+        {
+            // Arrange:
+            var url = new Uri("http://www.uncas.dk");
+            var crawlConfiguration =
+                new CrawlConfiguration(
+                    url,
+                    10);
+            const int NewMaxVisits = 117;
+
+            // Act:
+            crawlConfiguration.ChangeMaxVisits(NewMaxVisits);
+
+            // Assert:
+            Assert.AreEqual(
+                NewMaxVisits,
+                crawlConfiguration.MaxVisits);
+        }
     }
 }
