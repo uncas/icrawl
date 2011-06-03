@@ -35,7 +35,7 @@ namespace Uncas.WebTester.Models
         /// Initializes a new instance of the <see cref="LogEntry"/> class.
         /// </summary>
         /// <param name="exception">The exception.</param>
-        /// <exception cref="System.ArgumentNullException">Exception is null</exception>
+        /// <exception cref="System.ArgumentNullException">The exception parameter is null.</exception>
         public LogEntry(Exception exception)
         {
             if (exception == null)

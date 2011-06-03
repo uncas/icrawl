@@ -24,8 +24,8 @@
             {
                 string[] statusCodeStrings =
                     ConfigFileParser.GetConfigValue(
-                    "AcceptableStatusCodes", "200").
-                    Split(',', ';');
+                    "AcceptableStatusCodes", "200")
+                    .Split(',', ';');
                 var result = new List<HttpStatusCode>();
                 foreach (string statusCodeString in statusCodeStrings)
                 {
@@ -45,8 +45,8 @@
             var result = new List<Uri>();
             string[] baseUrlStrings =
                 ConfigFileParser.GetConfigValue(
-                "BaseUrls", "http://www.uncas.dk").
-                Split(',', ';');
+                "BaseUrls", "http://www.uncas.dk")
+                .Split(',', ';');
             foreach (string baseUrlString in baseUrlStrings)
             {
                 result.Add(new Uri(baseUrlString));

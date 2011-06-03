@@ -23,14 +23,14 @@ namespace Uncas.WebTester.ApplicationServices
         private readonly IBrowserUtility browserUtility;
 
         /// <summary>
-        /// The random number generator.
-        /// </summary>
-        private readonly Random random = new Random();
-
-        /// <summary>
         /// The result service.
         /// </summary>
         private readonly IResultService resultService;
+
+        /// <summary>
+        /// The random number generator.
+        /// </summary>
+        private readonly Random random = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CrawlerService"/> class.
@@ -63,7 +63,7 @@ namespace Uncas.WebTester.ApplicationServices
             CrawlConfiguration configuration)
         {
             Guid batchNumber = Guid.NewGuid();
-            List<HyperLink> links = GetStartUrls(configuration);
+            IList<HyperLink> links = GetStartUrls(configuration);
             int visits = 0;
             while (true)
             {
@@ -93,10 +93,10 @@ namespace Uncas.WebTester.ApplicationServices
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns>A list of hyper links.</returns>
-        private static List<HyperLink> GetStartUrls(
+        private static IList<HyperLink> GetStartUrls(
             CrawlConfiguration configuration)
         {
-            List<HyperLink> links = new List<HyperLink>();
+            IList<HyperLink> links = new List<HyperLink>();
             foreach (Uri startUrl in configuration.StartUrls)
             {
                 links.Add(new HyperLink(startUrl));

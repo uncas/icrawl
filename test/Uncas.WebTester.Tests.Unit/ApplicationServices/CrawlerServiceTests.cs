@@ -62,8 +62,8 @@
             var navigateResult =
                 GetNavigateResult(HttpStatusCode.OK);
             this.browserUtilityMock.Setup(
-                b => b.NavigateTo(It.IsAny<Uri>())).
-                Returns(navigateResult);
+                b => b.NavigateTo(It.IsAny<Uri>()))
+                .Returns(navigateResult);
 
             // Act:
             this.crawlerService.Crawl(configuration);
@@ -80,8 +80,8 @@
             var navigateResult =
                 GetNavigateResult(HttpStatusCode.OK);
             this.browserUtilityMock.Setup(
-                b => b.NavigateTo(It.IsAny<Uri>())).
-                Returns(navigateResult);
+                b => b.NavigateTo(It.IsAny<Uri>()))
+                .Returns(navigateResult);
 
             // Act:
             this.crawlerService.Crawl(configuration);
@@ -99,8 +99,8 @@
             var navigateResult =
                 GetNavigateResult(HttpStatusCode.OK);
             this.browserUtilityMock.Setup(
-                b => b.NavigateTo(It.IsAny<Uri>())).
-                Throws(new Exception());
+                b => b.NavigateTo(It.IsAny<Uri>()))
+                .Throws(new Exception());
 
             // Act:
             this.crawlerService.Crawl(configuration);
@@ -123,11 +123,11 @@
             var otherNavigateResult =
                 GetNavigateResult(HttpStatusCode.OK);
             this.browserUtilityMock.Setup(
-                b => b.NavigateTo(startUrl)).
-                Returns(startNavigateResult);
+                b => b.NavigateTo(startUrl))
+                .Returns(startNavigateResult);
             this.browserUtilityMock.Setup(
-                b => b.NavigateTo(otherUrl)).
-                Returns(otherNavigateResult);
+                b => b.NavigateTo(otherUrl))
+                .Returns(otherNavigateResult);
 
             // Act:
             this.crawlerService.Crawl(configuration);

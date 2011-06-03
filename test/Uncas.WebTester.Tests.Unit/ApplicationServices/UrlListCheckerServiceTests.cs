@@ -26,8 +26,8 @@
             var navigateResult =
                 GetNavigateResult(HttpStatusCode.OK);
             this.browserUtilityMock.Setup(
-                b => b.NavigateTo(It.IsAny<Uri>())).
-                Returns(navigateResult);
+                b => b.NavigateTo(It.IsAny<Uri>()))
+                .Returns(navigateResult);
             this.resultService =
                 new ResultServiceMock();
             this.service = new UrlListCheckerService(

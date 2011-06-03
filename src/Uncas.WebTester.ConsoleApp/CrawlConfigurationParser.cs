@@ -23,7 +23,7 @@ namespace Uncas.WebTester.ConsoleApp
         /// <returns>The crawl configuration.</returns>
         /// <remarks>
         /// Command line arguments, with default values:
-        /// -url http://localhost -maxPages 10
+        /// -url http://localhost -maxPages 10.
         /// </remarks>
         public static CrawlConfiguration ParseArguments(
             IList<string> args)
