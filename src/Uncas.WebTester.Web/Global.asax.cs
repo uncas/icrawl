@@ -14,7 +14,7 @@ namespace Uncas.WebTester.Web
     /// <summary>
     /// Sets up the Mvc application.
     /// </summary>
-    public class MvcApplication : HttpApplication
+    public class Global : HttpApplication
     {
         /// <summary>
         /// Registers the routes.
