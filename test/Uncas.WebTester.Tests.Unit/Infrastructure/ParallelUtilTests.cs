@@ -14,7 +14,7 @@
         {
             int x = 0;
             var random = new Random();
-            Func<bool> condition = () => x < 100;
+            Func<bool> condition = () => x < 20;
             ParallelUtil.While(
                 condition,
                 () =>
@@ -22,7 +22,7 @@
                     int sleepMilliseconds;
                     lock (LockObject)
                     {
-                        sleepMilliseconds = random.Next(199, 201);
+                        sleepMilliseconds = random.Next(19, 21);
                     }
 
                     Thread.Sleep(sleepMilliseconds);
@@ -32,7 +32,7 @@
                         Console.WriteLine(x);
                     }
                 },
-                10);
+                5);
         }
     }
 }

@@ -208,7 +208,7 @@ namespace Uncas.WebTester.ApplicationServices
         }
 
         /// <summary>
-        /// Goes to the next nextLink.
+        /// Goes to the next link.
         /// </summary>
         /// <param name="availableLinks">The available links.</param>
         /// <param name="batchNumber">The batch number.</param>
