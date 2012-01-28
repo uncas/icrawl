@@ -11,6 +11,7 @@ namespace Uncas.WebTester.ApplicationServices
     using System.Linq;
     using Uncas.WebTester.Models;
     using Uncas.WebTester.Utilities;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Crawls a website.
@@ -54,6 +55,10 @@ namespace Uncas.WebTester.ApplicationServices
             this.GetLinks(configuration);
         }
 
+        private static object LockObject = new object();
+
+        int visits = 0;
+
         /// <summary>
         /// Gets the links.
         /// </summary>
@@ -64,28 +69,39 @@ namespace Uncas.WebTester.ApplicationServices
         {
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
-            int visits = 0;
             while (true)
             {
-                var availableLinks = links.Where(l => !l.IsVisited);
-                if (ShouldCrawlBreak(
-                    configuration,
-                    visits,
-                    availableLinks.Count(),
-                    links.Count))
-                {
+                bool continueLoop = ContinueLoop(links, configuration, batchNumber);
+                if (!continueLoop)
                     break;
-                }
-
-                visits++;
-                this.HandleNextLink(
-                    configuration,
-                    links,
-                    availableLinks,
-                    batchNumber);
             }
 
             return links;
+        }
+
+        private bool ContinueLoop(
+            IList<HyperLink> links,
+            CrawlConfiguration configuration,
+            Guid batchNumber)
+        {
+            IEnumerable<HyperLink> availableLinks = links.Where(l => !l.IsVisited);
+            if (ShouldCrawlBreak(
+                configuration,
+                visits,
+                availableLinks.Count(),
+                links.Count))
+            {
+                return false;
+            }
+
+            visits++;
+            this.HandleNextLink(
+                configuration,
+                links,
+                availableLinks,
+                batchNumber);
+
+            return true;
         }
 
         /// <summary>
