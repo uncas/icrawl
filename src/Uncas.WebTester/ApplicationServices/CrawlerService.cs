@@ -194,7 +194,7 @@ namespace Uncas.WebTester.ApplicationServices
             IEnumerable<HyperLink> availableLinks,
             Guid batchNumber)
         {
-            var navigateResult =
+            NavigateResult navigateResult =
                 this.GoToNextLink(
                 availableLinks,
                 batchNumber);
@@ -218,7 +218,7 @@ namespace Uncas.WebTester.ApplicationServices
             Guid batchNumber)
         {
             int nextIndex = this.random.Next(availableLinks.Count());
-            var nextLink = availableLinks.ElementAt(nextIndex);
+            HyperLink nextLink = availableLinks.ElementAt(nextIndex);
             nextLink.UpdateBatchNumber(batchNumber);
             return NavigateHelper.NavigateToAndProcessLink(
                 this.browserUtility,
