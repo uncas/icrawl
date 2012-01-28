@@ -108,14 +108,11 @@
         {
             // Arrange:
             var url = new Uri("http://www.uncas.dk");
+            const int NewMaxVisits = 117;
             var crawlConfiguration =
                 new CrawlConfiguration(
                     url,
-                    10);
-            const int NewMaxVisits = 117;
-
-            // Act:
-            crawlConfiguration.ChangeMaxVisits(NewMaxVisits);
+                    NewMaxVisits);
 
             // Assert:
             Assert.AreEqual(

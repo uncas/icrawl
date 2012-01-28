@@ -26,13 +26,14 @@ namespace Uncas.WebTester.ApplicationServices
         /// Initializes a new instance of the <see cref="CrawlConfiguration"/> class.
         /// </summary>
         /// <param name="startUrls">The start urls.</param>
-        /// <param name="maxLinks">The max links.</param>
+        /// <param name="maxVisits">The max visits.</param>
         public CrawlConfiguration(
             IList<Uri> startUrls,
-            int? maxLinks)
+            int? maxVisits)
         {
             this.StartUrls = startUrls;
-            this.MaxLinks = maxLinks;
+            this.MaxLinks = null;
+            this.MaxVisits = maxVisits;
             this.SetMatchPatterns();
         }
 
@@ -97,15 +98,6 @@ namespace Uncas.WebTester.ApplicationServices
             {
                 this.matchPatterns.AddRange(matchList);
             }
-        }
-
-        /// <summary>
-        /// Changes the max visits.
-        /// </summary>
-        /// <param name="maxVisits">The max visits.</param>
-        public void ChangeMaxVisits(int? maxVisits)
-        {
-            this.MaxVisits = maxVisits;
         }
 
         /// <summary>

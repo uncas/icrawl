@@ -87,8 +87,7 @@ namespace Uncas.WebTester.NUnitRunner
             var configuration =
                 new CrawlConfiguration(
                 startUrls,
-                null);
-            configuration.ChangeMaxVisits(this.MaxVisits);
+                this.MaxVisits);
             Console.WriteLine("Testing {0} pages on {1}:", this.MaxVisits, startUrls[0].AbsoluteUri);
             this.crawlerService.Crawl(configuration);
             if (this.failedLinks.Count > 0)
