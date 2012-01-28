@@ -69,6 +69,10 @@ namespace Uncas.WebTester.ApplicationServices
         {
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
+
+            // TODO: Parallellize using this tip:
+            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
+
             while (true)
             {
                 bool continueLoop = ContinueLoop(links, configuration, batchNumber);
