@@ -11,7 +11,6 @@ namespace Uncas.WebTester.ApplicationServices
     using System.Linq;
     using Uncas.WebTester.Models;
     using Uncas.WebTester.Utilities;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Crawls a website.
@@ -64,7 +63,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns>A list of hyper links.</returns>
-        public IEnumerable<HyperLink> GetLinks(
+        private IEnumerable<HyperLink> GetLinks(
             CrawlConfiguration configuration)
         {
             Guid batchNumber = Guid.NewGuid();

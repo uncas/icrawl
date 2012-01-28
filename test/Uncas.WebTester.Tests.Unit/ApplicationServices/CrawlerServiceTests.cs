@@ -1,7 +1,6 @@
 ﻿namespace Uncas.WebTester.ApplicationServices.Tests.Unit
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using Moq;
     using NUnit.Framework;
@@ -134,20 +133,6 @@
 
             // Assert:
             Assert.That(this.resultService.NumberOfResults, Is.EqualTo(2));
-        }
-
-        [Test]
-        public void GetLinks_Default_Ok()
-        {
-            // Arrange:
-            IEnumerable<Uri> baseUrls = new List<Uri>();
-            var configuration = GetCrawlConfiguration(
-                new Uri("http://www.uncas.dk"));
-            configuration.StartUrls.Add(new Uri("http://zen.uncas.dk"));
-
-            IEnumerable<HyperLink> links =
-                this.crawlerService.GetLinks(
-                configuration);
         }
 
         /// <summary>

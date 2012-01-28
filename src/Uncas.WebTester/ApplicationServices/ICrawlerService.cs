@@ -6,9 +6,6 @@
 
 namespace Uncas.WebTester.ApplicationServices
 {
-    using System.Collections.Generic;
-    using Uncas.WebTester.Models;
-
     /// <summary>
     /// Crawls a website.
     /// </summary>
@@ -19,12 +16,5 @@ namespace Uncas.WebTester.ApplicationServices
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         void Crawl(CrawlConfiguration configuration);
-
-        /// <summary>
-        /// Gets the links.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <returns>A list of hyper links.</returns>
-        IEnumerable<HyperLink> GetLinks(CrawlConfiguration configuration);
     }
 }
