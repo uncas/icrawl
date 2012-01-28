@@ -32,7 +32,6 @@ namespace Uncas.WebTester.ApplicationServices
             int? maxVisits)
         {
             this.StartUrls = startUrls;
-            this.MaxLinks = null;
             this.MaxVisits = maxVisits;
             this.SetMatchPatterns();
         }
@@ -75,12 +74,6 @@ namespace Uncas.WebTester.ApplicationServices
                 return this.matchPatterns;
             }
         }
-
-        /// <summary>
-        /// Gets the max number of links to collect.
-        /// </summary>
-        /// <value>The max number of links to collect.</value>
-        public int? MaxLinks { get; private set; }
 
         /// <summary>
         /// Gets the max number of pages to visit.

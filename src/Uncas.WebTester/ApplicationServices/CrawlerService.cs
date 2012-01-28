@@ -98,12 +98,9 @@ namespace Uncas.WebTester.ApplicationServices
             int totalLinks)
         {
             int? maxVisits = configuration.MaxVisits;
-            int? maxLinks = configuration.MaxLinks;
             return availableLinks == 0 ||
                 (maxVisits.HasValue &&
-                maxVisits.Value <= visits) ||
-                (maxLinks.HasValue &&
-                maxLinks.Value <= totalLinks);
+                maxVisits.Value <= visits);
         }
 
         /// <summary>
