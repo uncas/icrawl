@@ -33,6 +33,16 @@ namespace Uncas.WebTester.ApplicationServices
         private readonly Random random = new Random();
 
         /// <summary>
+        /// The lock object.
+        /// </summary>
+        private static object lockObject = new object();
+
+        /// <summary>
+        /// The visits.
+        /// </summary>
+        private int visits = 0;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CrawlerService"/> class.
         /// </summary>
         /// <param name="resultService">The result service.</param>
@@ -52,59 +62,6 @@ namespace Uncas.WebTester.ApplicationServices
         public void Crawl(CrawlConfiguration configuration)
         {
             this.GetLinks(configuration);
-        }
-
-        private static object LockObject = new object();
-
-        int visits = 0;
-
-        /// <summary>
-        /// Gets the links.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <returns>A list of hyper links.</returns>
-        private IEnumerable<HyperLink> GetLinks(
-            CrawlConfiguration configuration)
-        {
-            Guid batchNumber = Guid.NewGuid();
-            IList<HyperLink> links = GetStartUrls(configuration);
-
-            // TODO: Parallellize using this tip:
-            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
-
-            while (true)
-            {
-                bool continueLoop = ContinueLoop(links, configuration, batchNumber);
-                if (!continueLoop)
-                    break;
-            }
-
-            return links;
-        }
-
-        private bool ContinueLoop(
-            IList<HyperLink> links,
-            CrawlConfiguration configuration,
-            Guid batchNumber)
-        {
-            IEnumerable<HyperLink> availableLinks = links.Where(l => !l.IsVisited);
-            if (ShouldCrawlBreak(
-                configuration,
-                visits,
-                availableLinks.Count(),
-                links.Count))
-            {
-                return false;
-            }
-
-            visits++;
-            this.HandleNextLink(
-                configuration,
-                links,
-                availableLinks,
-                batchNumber);
-
-            return true;
         }
 
         /// <summary>
@@ -168,6 +125,63 @@ namespace Uncas.WebTester.ApplicationServices
             {
                 links.Add(newLink);
             }
+        }
+
+        /// <summary>
+        /// Gets the links.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>A list of hyper links.</returns>
+        private IEnumerable<HyperLink> GetLinks(
+            CrawlConfiguration configuration)
+        {
+            Guid batchNumber = Guid.NewGuid();
+            IList<HyperLink> links = GetStartUrls(configuration);
+
+            // TODO: Parallellize using this tip:
+            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
+            while (true)
+            {
+                bool continueLoop = this.ContinueLoop(links, configuration, batchNumber);
+                if (!continueLoop)
+                {
+                    break;
+                }
+            }
+
+            return links;
+        }
+
+        /// <summary>
+        /// Continues the loop.
+        /// </summary>
+        /// <param name="links">The links.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <returns>True to continue loop, otherwise false.</returns>
+        private bool ContinueLoop(
+            IList<HyperLink> links,
+            CrawlConfiguration configuration,
+            Guid batchNumber)
+        {
+            IEnumerable<HyperLink> availableLinks = links.Where(l => !l.IsVisited);
+            if (ShouldCrawlBreak(
+                configuration,
+                this.visits,
+                availableLinks.Count(),
+                links.Count))
+            {
+                return false;
+            }
+
+            this.visits++;
+            this.HandleNextLink(
+                configuration,
+                links,
+                availableLinks,
+                batchNumber);
+
+            return true;
         }
 
         /// <summary>

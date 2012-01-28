@@ -1,9 +1,7 @@
 ﻿namespace Uncas.WebTester.Tests.Unit.Infrastructure
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading;
-    using System.Threading.Tasks;
     using NUnit.Framework;
 
     [TestFixture]
@@ -23,7 +21,10 @@
                 {
                     int sleepMilliseconds;
                     lock (LockObject)
+                    {
                         sleepMilliseconds = random.Next(199, 201);
+                    }
+
                     Thread.Sleep(sleepMilliseconds);
                     lock (LockObject)
                     {
@@ -32,31 +33,6 @@
                     }
                 },
                 10);
-        }
-    }
-
-    public class ParallelUtil
-    {
-        public static void While(
-            Func<bool> condition,
-            Action body,
-            int maxDegreeOfParallelism)
-        {
-            var parallelOptions =
-                new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = maxDegreeOfParallelism
-                };
-            Parallel.ForEach(
-                IterateUntilFalse(condition),
-                parallelOptions,
-                ignored => body());
-        }
-
-        private static IEnumerable<bool> IterateUntilFalse(Func<bool> condition)
-        {
-            while (condition())
-                yield return true;
         }
     }
 }
