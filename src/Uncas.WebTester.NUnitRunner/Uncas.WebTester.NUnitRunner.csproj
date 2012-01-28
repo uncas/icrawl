@@ -51,7 +51,6 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="NUnitLinkTester.cs" />
-    <Compile Include="NUnitCrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

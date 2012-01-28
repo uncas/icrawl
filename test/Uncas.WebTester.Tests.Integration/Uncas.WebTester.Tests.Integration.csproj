@@ -47,8 +47,6 @@
   <ItemGroup>
     <Compile Include="ApplicationServices\CrawlerServiceTests.cs" />
     <Compile Include="Infrastructure\ConfigFileParserTests.cs" />
-    <Compile Include="NUnitRunner\NUnitCrawlerTestsZenUncasDk.cs" />
-    <Compile Include="NUnitRunner\NUnitCrawlerTestsWwwUncasDk.cs" />
     <Compile Include="Infrastructure\BaseSqlAdoTests.cs" />
     <Compile Include="IntegrationTestHelper.cs" />
     <Compile Include="NUnitRunner\NUnitLinkTesterUncasDk.cs" />
