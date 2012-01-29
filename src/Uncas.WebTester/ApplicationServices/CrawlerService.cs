@@ -38,11 +38,6 @@ namespace Uncas.WebTester.ApplicationServices
         private static object lockObject = new object();
 
         /// <summary>
-        /// The visits.
-        /// </summary>
-        private int visits = 0;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="CrawlerService"/> class.
         /// </summary>
         /// <param name="resultService">The result service.</param>
@@ -135,13 +130,11 @@ namespace Uncas.WebTester.ApplicationServices
                 return false;
             }
 
-            this.visits++;
             this.HandleNextLink(
                 configuration,
                 links,
                 availableLinks,
                 batchNumber);
-
             return true;
         }
 
