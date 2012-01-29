@@ -54,7 +54,6 @@ namespace Uncas.WebTester.ApplicationServices
                     break;
                 }
 
-                link.UpdateBatchNumber(batchNumber);
                 NavigateResult result = 
                     NavigateHelper.NavigateToAndProcessUrl(
                     link.Url,
@@ -65,7 +64,8 @@ namespace Uncas.WebTester.ApplicationServices
                     result.NumberOfLinks,
                     result.Images,
                     result.HtmlLength,
-                    result.DocumentElements);
+                    result.DocumentElements,
+                    batchNumber);
                 this.resultService.ProcessResult(link);
             }
         }

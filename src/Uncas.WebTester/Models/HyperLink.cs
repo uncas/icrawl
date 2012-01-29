@@ -115,15 +115,6 @@ namespace Uncas.WebTester.Models
         }
 
         /// <summary>
-        /// Updates the batch number.
-        /// </summary>
-        /// <param name="batchNumber">The batch number.</param>
-        internal void UpdateBatchNumber(Guid batchNumber)
-        {
-            this.BatchNumber = batchNumber;
-        }
-
-        /// <summary>
         /// Updates with the navigate result.
         /// </summary>
         /// <param name="loadTime">The load time.</param>
@@ -132,14 +123,17 @@ namespace Uncas.WebTester.Models
         /// <param name="images">The images.</param>
         /// <param name="htmlLength">Length of the HTML.</param>
         /// <param name="documentElements">The document elements.</param>
+        /// <param name="batchNumber">The batch number.</param>
         internal void UpdateWithNavigateResult(
             TimeSpan loadTime,
             HttpStatusCode statusCode,
             int numberOfLinks,
             int images,
             int htmlLength,
-            int documentElements)
+            int documentElements,
+            Guid batchNumber)
         {
+            this.BatchNumber = batchNumber;
             this.IsVisited = true;
             this.LoadTime = loadTime;
             this.StatusCode = statusCode;
