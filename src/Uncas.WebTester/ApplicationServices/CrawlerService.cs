@@ -61,7 +61,19 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="configuration">The configuration.</param>
         public void Crawl(CrawlConfiguration configuration)
         {
-            this.GetLinks(configuration);
+            Guid batchNumber = Guid.NewGuid();
+            IList<HyperLink> links = GetStartUrls(configuration);
+
+            // TODO: Parallellize using this tip:
+            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
+            while (true)
+            {
+                bool continueLoop = this.ContinueLoop(links, configuration, batchNumber);
+                if (!continueLoop)
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -119,31 +131,6 @@ namespace Uncas.WebTester.ApplicationServices
             {
                 links.Add(newLink);
             }
-        }
-
-        /// <summary>
-        /// Gets the links.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <returns>A list of hyper links.</returns>
-        private IEnumerable<HyperLink> GetLinks(
-            CrawlConfiguration configuration)
-        {
-            Guid batchNumber = Guid.NewGuid();
-            IList<HyperLink> links = GetStartUrls(configuration);
-
-            // TODO: Parallellize using this tip:
-            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
-            while (true)
-            {
-                bool continueLoop = this.ContinueLoop(links, configuration, batchNumber);
-                if (!continueLoop)
-                {
-                    break;
-                }
-            }
-
-            return links;
         }
 
         /// <summary>
