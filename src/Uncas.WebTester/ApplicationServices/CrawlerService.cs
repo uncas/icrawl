@@ -63,10 +63,12 @@ namespace Uncas.WebTester.ApplicationServices
         {
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
+            //int maxDegreeOfParallelization = 5;
+            ContinueLoop(links, configuration, batchNumber);
 
             // TODO: Parallellize using this tip:
             // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
-            while (true)
+            for (int i = 0; i < configuration.MaxVisits - 1; i++)
             {
                 bool continueLoop = this.ContinueLoop(links, configuration, batchNumber);
                 if (!continueLoop)
@@ -107,9 +109,7 @@ namespace Uncas.WebTester.ApplicationServices
             int visits,
             int availableLinks)
         {
-            int maxVisits = configuration.MaxVisits;
-            return availableLinks == 0 ||
-                maxVisits <= visits;
+            return availableLinks == 0;
         }
 
         /// <summary>
