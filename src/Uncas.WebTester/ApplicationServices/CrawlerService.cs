@@ -9,6 +9,7 @@ namespace Uncas.WebTester.ApplicationServices
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Uncas.WebTester.Models;
     using Uncas.WebTester.Utilities;
 
@@ -59,14 +60,17 @@ namespace Uncas.WebTester.ApplicationServices
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
 
-            // int maxDegreeOfParallelization = 5;
             this.ContinueLoop(links, configuration, batchNumber);
 
-            // TODO: Parallellize using this tip:
-            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
-            for (int i = 0; i < configuration.MaxVisits - 1; i++)
+            int maxDegreeOfParallelism = 5;
+
+            if (maxDegreeOfParallelism == 1)
             {
-                this.ContinueLoop(links, configuration, batchNumber);
+                this.RunInSequence(configuration, batchNumber, links);
+            }
+            else
+            {
+                this.RunInParallel(configuration, batchNumber, links, maxDegreeOfParallelism);
             }
         }
 
@@ -106,6 +110,53 @@ namespace Uncas.WebTester.ApplicationServices
             {
                 links.Add(newLink);
             }
+        }
+
+        /// <summary>
+        /// Runs the in sequence.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <param name="links">The links.</param>
+        private void RunInSequence(
+            CrawlConfiguration configuration,
+            Guid batchNumber,
+            IList<HyperLink> links)
+        {
+            for (int i = 0; i < configuration.MaxVisits - 1; i++)
+            {
+                this.ContinueLoop(links, configuration, batchNumber);
+            }
+        }
+
+        /// <summary>
+        /// Runs the in parallel.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="batchNumber">The batch number.</param>
+        /// <param name="links">The links.</param>
+        /// <param name="maxDegreeOfParallelism">The max degree of parallelism.</param>
+        private void RunInParallel(
+            CrawlConfiguration configuration,
+            Guid batchNumber,
+            IList<HyperLink> links,
+            int maxDegreeOfParallelism)
+        {
+            // Parallellized using this tip:
+            // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
+            var options =
+                new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = maxDegreeOfParallelism
+                };
+            Parallel.For(
+                0,
+                configuration.MaxVisits - 1,
+                options,
+                (x) =>
+                {
+                    this.ContinueLoop(links, configuration, batchNumber);
+                });
         }
 
         /// <summary>
