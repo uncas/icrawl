@@ -172,10 +172,14 @@ namespace Uncas.WebTester.ApplicationServices
             CrawlConfiguration configuration,
             Guid batchNumber)
         {
-            IEnumerable<HyperLink> availableLinks = links.Where(l => !l.IsVisited);
-            if (availableLinks.Count() == 0)
+            IList<HyperLink> availableLinks;
+            lock (lockObject)
             {
-                return;
+                availableLinks = links.Where(l => !l.IsVisited).ToList();
+                if (availableLinks.Count() == 0)
+                {
+                    return;
+                }
             }
 
             this.HandleNextLink(
@@ -202,15 +206,17 @@ namespace Uncas.WebTester.ApplicationServices
                 this.GoToNextLink(
                 availableLinks,
                 batchNumber);
-            if (navigateResult != null)
+            if (navigateResult == null)
             {
-                lock (lockObject)
-                {
-                    AddNewLinks(
-                        links,
-                        navigateResult.Links,
-                        configuration);
-                }
+                return;
+            }
+
+            lock (lockObject)
+            {
+                AddNewLinks(
+                    links,
+                    navigateResult.Links,
+                    configuration);
             }
         }
 
