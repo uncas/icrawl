@@ -219,6 +219,7 @@ namespace Uncas.WebTester.ApplicationServices
         {
             int nextIndex = this.random.Next(availableLinks.Count());
             HyperLink nextLink = availableLinks.ElementAt(nextIndex);
+            nextLink.Visit();
             NavigateResult result =
                 NavigateHelper.NavigateToAndProcessUrl(
                 nextLink.Url,

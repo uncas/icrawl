@@ -134,13 +134,17 @@ namespace Uncas.WebTester.Models
             Guid batchNumber)
         {
             this.BatchNumber = batchNumber;
-            this.IsVisited = true;
             this.LoadTime = loadTime;
             this.StatusCode = statusCode;
             this.NumberOfLinks = numberOfLinks;
             this.Images = images;
             this.HtmlLength = htmlLength;
             this.DocumentElements = documentElements;
+        }
+
+        internal void Visit()
+        {
+            this.IsVisited = true;
         }
     }
 }

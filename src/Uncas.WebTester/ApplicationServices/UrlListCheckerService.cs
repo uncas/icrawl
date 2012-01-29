@@ -54,6 +54,7 @@ namespace Uncas.WebTester.ApplicationServices
                     break;
                 }
 
+                link.Visit();
                 NavigateResult result = 
                     NavigateHelper.NavigateToAndProcessUrl(
                     link.Url,
