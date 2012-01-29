@@ -17,6 +17,9 @@ namespace Uncas.WebTester.ApplicationServices
     /// </summary>
     public class CrawlConfiguration
     {
+        /// <summary>
+        /// The default maximum number of visits.
+        /// </summary>
         private const int DefaultMaxVisits = 1000;
 
         /// <summary>

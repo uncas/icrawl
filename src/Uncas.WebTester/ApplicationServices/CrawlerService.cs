@@ -87,15 +87,13 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="configuration">The configuration.</param>
         /// <param name="visits">The number of pages.</param>
         /// <param name="availableLinks">The available links.</param>
-        /// <param name="totalLinks">The total links.</param>
         /// <returns>
         /// True if the crawl should break, false otherwise.
         /// </returns>
         private static bool ShouldCrawlBreak(
             CrawlConfiguration configuration,
             int visits,
-            int availableLinks,
-            int totalLinks)
+            int availableLinks)
         {
             int maxVisits = configuration.MaxVisits;
             return availableLinks == 0 ||
@@ -164,8 +162,7 @@ namespace Uncas.WebTester.ApplicationServices
             if (ShouldCrawlBreak(
                 configuration,
                 this.visits,
-                availableLinks.Count(),
-                links.Count))
+                availableLinks.Count()))
             {
                 return false;
             }

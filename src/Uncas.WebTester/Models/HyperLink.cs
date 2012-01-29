@@ -142,6 +142,9 @@ namespace Uncas.WebTester.Models
             this.DocumentElements = documentElements;
         }
 
+        /// <summary>
+        /// Visits this instance.
+        /// </summary>
         internal void Visit()
         {
             this.IsVisited = true;
