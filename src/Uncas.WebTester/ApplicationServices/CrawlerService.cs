@@ -58,7 +58,7 @@ namespace Uncas.WebTester.ApplicationServices
         {
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
-            
+
             // int maxDegreeOfParallelization = 5;
             this.ContinueLoop(links, configuration, batchNumber);
 
@@ -151,10 +151,13 @@ namespace Uncas.WebTester.ApplicationServices
                 batchNumber);
             if (navigateResult != null)
             {
-                AddNewLinks(
-                    links,
-                    navigateResult.Links,
-                    configuration);
+                lock (lockObject)
+                {
+                    AddNewLinks(
+                        links,
+                        navigateResult.Links,
+                        configuration);
+                }
             }
         }
 
@@ -168,21 +171,30 @@ namespace Uncas.WebTester.ApplicationServices
             IEnumerable<HyperLink> availableLinks,
             Guid batchNumber)
         {
-            int nextIndex = this.random.Next(availableLinks.Count());
-            HyperLink nextLink = availableLinks.ElementAt(nextIndex);
-            nextLink.Visit();
+            HyperLink nextLink;
+            lock (lockObject)
+            {
+                int nextIndex = this.random.Next(availableLinks.Count());
+                nextLink = availableLinks.ElementAt(nextIndex);
+                nextLink.Visit();
+            }
+
             NavigateResult result =
                 NavigateHelper.NavigateToAndProcessUrl(
                 nextLink.Url,
                 this.browserUtility);
-            nextLink.UpdateWithNavigateResult(
-                result.LoadTime,
-                result.StatusCode,
-                result.NumberOfLinks,
-                result.Images,
-                result.HtmlLength,
-                result.DocumentElements,
-                batchNumber);
+            lock (lockObject)
+            {
+                nextLink.UpdateWithNavigateResult(
+                    result.LoadTime,
+                    result.StatusCode,
+                    result.NumberOfLinks,
+                    result.Images,
+                    result.HtmlLength,
+                    result.DocumentElements,
+                    batchNumber);
+            }
+
             this.resultService.ProcessResult(nextLink);
             return result;
         }
