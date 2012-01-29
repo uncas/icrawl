@@ -17,6 +17,8 @@ namespace Uncas.WebTester.ApplicationServices
     /// </summary>
     public class CrawlConfiguration
     {
+        private const int DefaultMaxVisits = 1000;
+
         /// <summary>
         /// The match patterns.
         /// </summary>
@@ -32,7 +34,7 @@ namespace Uncas.WebTester.ApplicationServices
             int? maxVisits)
         {
             this.StartUrls = startUrls;
-            this.MaxVisits = maxVisits;
+            this.MaxVisits = maxVisits ?? DefaultMaxVisits;
             this.SetMatchPatterns();
         }
 
@@ -50,7 +52,7 @@ namespace Uncas.WebTester.ApplicationServices
             this.StartUrls = new List<Uri>();
             this.StartUrls.Add(startUrl);
             this.SetMatchPatterns();
-            this.MaxVisits = maxVisits;
+            this.MaxVisits = maxVisits ?? DefaultMaxVisits;
             if (patterns != null && patterns.Length > 0)
             {
                 this.matchPatterns.AddRange(patterns);
@@ -79,7 +81,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// Gets the max number of pages to visit.
         /// </summary>
         /// <value>The max number of pages to visit.</value>
-        public int? MaxVisits { get; private set; }
+        public int MaxVisits { get; private set; }
 
         /// <summary>
         /// Adds the matches.
