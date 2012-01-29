@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Uncas.WebTester.Tests.Unit.Infrastructure
+﻿namespace Uncas.WebTester.Tests.Unit.Infrastructure
 {
-    class PageDetails
+    using System;
+    using System.Collections.Generic;
+
+    public class PageDetails
     {
-        private readonly IList<PageDummy> _links;
+        private static readonly Random random = new Random();
+
+        private readonly IList<PageDummy> links;
+
         public PageDetails()
         {
-            _links = new List<PageDummy>();
+            this.links = new List<PageDummy>();
         }
 
-        private static readonly Random _random = new Random();
-
-        internal void AddLink()
+        public IEnumerable<PageDummy> Links
         {
-            _links.Add(new PageDummy(_random.Next()));
+            get { return this.links; }
         }
 
-        public IEnumerable<PageDummy> Links { get { return _links; } }
+        public void AddLink()
+        {
+            this.links.Add(new PageDummy(random.Next()));
+        }
     }
 }

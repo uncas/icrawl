@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Uncas.WebTester.Tests.Unit.Infrastructure
+﻿namespace Uncas.WebTester.Tests.Unit.Infrastructure
 {
-    class PageDummy
+    public class PageDummy
     {
         public PageDummy(int id)
         {
