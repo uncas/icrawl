@@ -1,14 +1,19 @@
 ﻿namespace Uncas.WebTester.Tests.Unit.Infrastructure
 {
     using System;
-    using System.Threading;
-    using NUnit.Framework;
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using NUnit.Framework;
 
     [TestFixture]
     public class ParallelUtilTests
     {
-        private static readonly object LockObject = new object();
+        private static readonly object _lockObject = new object();
+
+        private static Random _random = new Random();
 
         [Test]
         public void While_X()
@@ -23,7 +28,7 @@
                 () =>
                 {
                     int sleepMilliseconds;
-                    lock (LockObject)
+                    lock (_lockObject)
                     {
                         if (!condition())
                             return;
@@ -31,7 +36,7 @@
                     }
 
                     Thread.Sleep(sleepMilliseconds);
-                    lock (LockObject)
+                    lock (_lockObject)
                     {
                         if (!condition())
                             return;
@@ -51,15 +56,96 @@
         public void ParallelCrawl_Pseudo()
         {
             // Determine max pages to visit (maxVisits).
+            int maxPages = 100;
+
             // Determine how many to run in parallel (maxDegreeOfParallelism).
+            int maxDegreeOfParallelism = 5;
+
             // Serially: create list of 2*maxDegreeOfParallelism pages to visit (links).
+            var list = new List<PageDummy>(maxPages);
+            // Adding initial pages:
+            list.AddRange(GetInitialPages());
+            int numberOfInitialPages = list.Count;
+
+            // TODO: Warm initial pages up
+
+            // TODO: Pre-populate list by visiting initial pages:
+            for (int i = 0; i < 2 * maxDegreeOfParallelism - numberOfInitialPages; i++)
+                list.Add(new PageDummy(_random.Next()));
+
             // Parallel:
             // - For x = 0, x < maxVisits, x++.
-            // - Lock: get random non-visited link from list and set visited=true.
-            // - Visit page and extract details.
-            // - Lock:
-            //   - Add details about the link/page and add new-found links.
-            //   - visits++
+            var options =
+                new ParallelOptions
+            {
+                MaxDegreeOfParallelism = maxDegreeOfParallelism
+            };
+            int visits = 0;
+            Parallel.For(
+                0,
+                maxPages,
+                options,
+                (x) =>
+                {
+                    var page = GetRandomPage(list);
+                    var details = GetPageDetails(page);
+                    AddDetails(list, details);
+                    lock (_lockObject)
+                    {
+                        visits++;
+                    }
+
+                    OutputDetails(page, visits);
+                });
+        }
+
+        private IEnumerable<PageDummy> GetInitialPages()
+        {
+            var result = new List<PageDummy>();
+            result.Add(new PageDummy(_random.Next()));
+            result.Add(new PageDummy(_random.Next()));
+            return result;
+        }
+
+        private void OutputDetails(PageDummy page, int visits)
+        {
+            Console.WriteLine("{0}: {1}", visits, page.Id);
+        }
+
+        private static void AddDetails(List<PageDummy> list, PageDetails details)
+        {
+            // Add details about the link/page and add new-found links.
+            lock (_lockObject)
+            {
+                list.AddRange(details.Links);
+            }
+        }
+
+        private PageDetails GetPageDetails(PageDummy page)
+        {
+            // Visit page and extract details.
+            // Simulating some time to visit the page:
+            Thread.Sleep(10);
+            var result = new PageDetails();
+            result.AddLink();
+            result.AddLink();
+            result.AddLink();
+            result.AddLink();
+            return result;
+        }
+
+        private PageDummy GetRandomPage(List<PageDummy> list)
+        {
+            // Get random non-visited link from list and set visited=true.
+            lock (_lockObject)
+            {
+                var unvisited = list.Where(x => !x.Visited);
+                var count = unvisited.Count();
+                var index = _random.Next(count);
+                var item = unvisited.ElementAt(index);
+                item.Visited = true;
+                return item;
+            }
         }
     }
 }

@@ -50,6 +50,8 @@
     <Compile Include="ApplicationServices\LoggerServiceTests.cs" />
     <Compile Include="ApplicationServices\UrlListCheckerServiceTests.cs" />
     <Compile Include="Infrastructure\CommandLineParserTests.cs" />
+    <Compile Include="Infrastructure\PageDetails.cs" />
+    <Compile Include="Infrastructure\PageDummy.cs" />
     <Compile Include="Infrastructure\ParallelUtil.cs" />
     <Compile Include="Infrastructure\ParallelUtilTests.cs" />
     <Compile Include="Mocks\ResultServiceMock.cs" />
