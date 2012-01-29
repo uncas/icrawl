@@ -6,8 +6,8 @@
 
 namespace Uncas.WebTester.ApplicationServices
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
-    using Uncas.WebTester.Models;
     using Uncas.WebTester.Utilities;
 
     /// <summary>
@@ -16,9 +16,9 @@ namespace Uncas.WebTester.ApplicationServices
     internal static class NavigateHelper
     {
         /// <summary>
-        /// Navigates to and process nextLink.
+        /// Navigates to and process URL.
         /// </summary>
-        /// <param name="nextLink">The next link.</param>
+        /// <param name="url">The URL to process.</param>
         /// <param name="browserUtility">The browser utility.</param>
         /// <returns>
         /// The navigate result.
@@ -27,14 +27,14 @@ namespace Uncas.WebTester.ApplicationServices
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "This is relatively high in the app...")]
-        public static NavigateResult NavigateToAndProcessLink(
-            HyperLink nextLink,
+        public static NavigateResult NavigateToAndProcessUrl(
+            Uri url,
             IBrowserUtility browserUtility)
         {
             NavigateResult result;
             try
             {
-                result = browserUtility.NavigateTo(nextLink.Url);
+                result = browserUtility.NavigateTo(url);
             }
             catch
             {
@@ -46,13 +46,6 @@ namespace Uncas.WebTester.ApplicationServices
                 result = NavigateResult.Empty;
             }
 
-            nextLink.UpdateWithNavigateResult(
-                result.LoadTime,
-                result.StatusCode,
-                result.NumberOfLinks,
-                result.Images,
-                result.HtmlLength,
-                result.DocumentElements);
             return result;
         }
     }
