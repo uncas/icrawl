@@ -66,11 +66,7 @@ namespace Uncas.WebTester.ApplicationServices
             // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
             for (int i = 0; i < configuration.MaxVisits - 1; i++)
             {
-                bool continueLoop = this.ContinueLoop(links, configuration, batchNumber);
-                if (!continueLoop)
-                {
-                    break;
-                }
+                this.ContinueLoop(links, configuration, batchNumber);
             }
         }
 
@@ -118,8 +114,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="links">The links.</param>
         /// <param name="configuration">The configuration.</param>
         /// <param name="batchNumber">The batch number.</param>
-        /// <returns>True to continue loop, otherwise false.</returns>
-        private bool ContinueLoop(
+        private void ContinueLoop(
             IList<HyperLink> links,
             CrawlConfiguration configuration,
             Guid batchNumber)
@@ -127,7 +122,7 @@ namespace Uncas.WebTester.ApplicationServices
             IEnumerable<HyperLink> availableLinks = links.Where(l => !l.IsVisited);
             if (availableLinks.Count() == 0)
             {
-                return false;
+                return;
             }
 
             this.HandleNextLink(
@@ -135,7 +130,6 @@ namespace Uncas.WebTester.ApplicationServices
                 links,
                 availableLinks,
                 batchNumber);
-            return true;
         }
 
         /// <summary>
