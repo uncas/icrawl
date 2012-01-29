@@ -11,6 +11,7 @@ namespace Uncas.WebTester.ApplicationServices
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using System.Configuration;
 
     /// <summary>
     /// Configuration for crawling.
@@ -21,6 +22,11 @@ namespace Uncas.WebTester.ApplicationServices
         /// The default maximum number of visits.
         /// </summary>
         private const int DefaultMaxVisits = 1000;
+
+        /// <summary>
+        /// The default max degree of parallelism.
+        /// </summary>
+        private const int DefaultMaxDegreeOfParallelism = 5;
 
         /// <summary>
         /// The match patterns.
@@ -151,6 +157,23 @@ namespace Uncas.WebTester.ApplicationServices
             foreach (Uri url in this.StartUrls)
             {
                 this.matchPatterns.Add(url.AbsoluteUri);
+            }
+        }
+
+        /// <summary>
+        /// Gets the max degree of parallelism.
+        /// </summary>
+        public int MaxDegreeOfParallelism
+        {
+            get
+            {
+                var value = ConfigurationManager.AppSettings["MaxDegreeOfParallelism"];
+                if (string.IsNullOrEmpty(value))
+                    return DefaultMaxDegreeOfParallelism;
+                int result;
+                if (int.TryParse(value, out result))
+                    return result;
+                return DefaultMaxDegreeOfParallelism;
             }
         }
     }

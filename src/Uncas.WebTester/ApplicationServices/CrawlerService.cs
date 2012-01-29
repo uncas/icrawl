@@ -62,14 +62,16 @@ namespace Uncas.WebTester.ApplicationServices
 
             this.ContinueLoop(links, configuration, batchNumber);
 
-            int maxDegreeOfParallelism = 5;
+            int maxDegreeOfParallelism = configuration.MaxDegreeOfParallelism;
 
             if (maxDegreeOfParallelism == 1)
             {
+                Console.WriteLine("Running in sequence.");
                 this.RunInSequence(configuration, batchNumber, links);
             }
             else
             {
+                Console.WriteLine("Running in up to {0} threads.", maxDegreeOfParallelism);
                 this.RunInParallel(configuration, batchNumber, links, maxDegreeOfParallelism);
             }
         }
