@@ -63,8 +63,9 @@ namespace Uncas.WebTester.ApplicationServices
         {
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
-            //int maxDegreeOfParallelization = 5;
-            ContinueLoop(links, configuration, batchNumber);
+            
+            // int maxDegreeOfParallelization = 5;
+            this.ContinueLoop(links, configuration, batchNumber);
 
             // TODO: Parallellize using this tip:
             // http://stackoverflow.com/questions/8671771/whats-the-best-way-of-achieving-a-parallel-infinite-loop
@@ -93,23 +94,6 @@ namespace Uncas.WebTester.ApplicationServices
             }
 
             return links;
-        }
-
-        /// <summary>
-        /// Determines whether the crawl should break.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="visits">The number of pages.</param>
-        /// <param name="availableLinks">The available links.</param>
-        /// <returns>
-        /// True if the crawl should break, false otherwise.
-        /// </returns>
-        private static bool ShouldCrawlBreak(
-            CrawlConfiguration configuration,
-            int visits,
-            int availableLinks)
-        {
-            return availableLinks == 0;
         }
 
         /// <summary>
@@ -146,10 +130,7 @@ namespace Uncas.WebTester.ApplicationServices
             Guid batchNumber)
         {
             IEnumerable<HyperLink> availableLinks = links.Where(l => !l.IsVisited);
-            if (ShouldCrawlBreak(
-                configuration,
-                this.visits,
-                availableLinks.Count()))
+            if (availableLinks.Count() == 0)
             {
                 return false;
             }
