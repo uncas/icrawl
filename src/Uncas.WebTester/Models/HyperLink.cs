@@ -115,15 +115,6 @@ namespace Uncas.WebTester.Models
         }
 
         /// <summary>
-        /// Updates the status code.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        public void UpdateStatusCode(HttpStatusCode statusCode)
-        {
-            this.StatusCode = statusCode;
-        }
-
-        /// <summary>
         /// Updates the batch number.
         /// </summary>
         /// <param name="batchNumber">The batch number.</param>

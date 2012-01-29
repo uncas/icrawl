@@ -1,7 +1,6 @@
 ﻿namespace Uncas.WebTester.Models.Tests.Unit
 {
     using System;
-    using System.Net;
     using NUnit.Framework;
 
     [TestFixture]
@@ -20,16 +19,6 @@
             var url = new Uri("http://www.uncas.dk");
             var hl = new HyperLink(url);
             hl.ToString();
-        }
-
-        [Test]
-        public void UpdateStatusCode_ToBadGateway_ChangedToBadGateway()
-        {
-            var url = new Uri("http://www.uncas.dk");
-            var hl = new HyperLink(url);
-            var statusCode = HttpStatusCode.BadGateway;
-            hl.UpdateStatusCode(statusCode);
-            Assert.AreEqual(statusCode, hl.StatusCode);
         }
     }
 }
