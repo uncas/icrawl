@@ -18,18 +18,18 @@ namespace Uncas.WebTester.ApplicationServices
         /// <summary>
         /// Navigates to and process nextLink.
         /// </summary>
+        /// <param name="nextLink">The next link.</param>
         /// <param name="browserUtility">The browser utility.</param>
-        /// <param name="resultService">The result service.</param>
-        /// <param name="nextLink">The next nextLink.</param>
-        /// <returns>The navigate result.</returns>
+        /// <returns>
+        /// The navigate result.
+        /// </returns>
         [SuppressMessage(
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "This is relatively high in the app...")]
         public static NavigateResult NavigateToAndProcessLink(
-                    IBrowserUtility browserUtility,
-                    IResultService resultService,
-                    HyperLink nextLink)
+            HyperLink nextLink,
+            IBrowserUtility browserUtility)
         {
             NavigateResult result;
             try
@@ -53,7 +53,6 @@ namespace Uncas.WebTester.ApplicationServices
                 result.Images,
                 result.HtmlLength,
                 result.DocumentElements);
-            resultService.ProcessResult(nextLink);
             return result;
         }
     }

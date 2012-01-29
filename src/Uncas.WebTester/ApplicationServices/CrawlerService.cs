@@ -220,10 +220,12 @@ namespace Uncas.WebTester.ApplicationServices
             int nextIndex = this.random.Next(availableLinks.Count());
             HyperLink nextLink = availableLinks.ElementAt(nextIndex);
             nextLink.UpdateBatchNumber(batchNumber);
-            return NavigateHelper.NavigateToAndProcessLink(
-                this.browserUtility,
-                this.resultService,
-                nextLink);
+            NavigateResult result = 
+                NavigateHelper.NavigateToAndProcessLink(
+                nextLink,
+                this.browserUtility);
+            this.resultService.ProcessResult(nextLink);
+            return result;
         }
     }
 }

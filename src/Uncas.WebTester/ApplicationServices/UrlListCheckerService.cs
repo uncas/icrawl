@@ -56,9 +56,9 @@ namespace Uncas.WebTester.ApplicationServices
 
                 link.UpdateBatchNumber(batchNumber);
                 NavigateHelper.NavigateToAndProcessLink(
-                    this.browserUtility,
-                    this.resultService,
-                    link);
+                    link,
+                    this.browserUtility);
+                this.resultService.ProcessResult(link);
             }
         }
     }
