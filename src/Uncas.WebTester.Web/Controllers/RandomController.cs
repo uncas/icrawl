@@ -23,7 +23,7 @@ namespace Uncas.WebTester.Web.Controllers
         /// <summary>
         /// Indexes the specified id.
         /// </summary>
-        /// <param name="id">The id.</param>
+        /// <param name="id">The id of the random subpage.</param>
         /// <returns>A random list of links.</returns>
         public ActionResult Index(int? id)
         {
