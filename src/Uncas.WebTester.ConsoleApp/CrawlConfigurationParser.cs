@@ -25,7 +25,7 @@ namespace Uncas.WebTester.ConsoleApp
         /// Command line arguments, with default values:
         /// -url http://localhost -maxPages 10.
         /// </remarks>
-        public static CrawlConfiguration ParseArguments(
+        public static ICrawlConfiguration ParseArguments(
             IList<string> args)
         {
             string url = GetStartUrl(args);

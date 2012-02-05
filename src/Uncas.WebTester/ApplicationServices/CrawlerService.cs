@@ -55,7 +55,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// Crawls the website.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        public void Crawl(CrawlConfiguration configuration)
+        public void Crawl(ICrawlConfiguration configuration)
         {
             Guid batchNumber = Guid.NewGuid();
             IList<HyperLink> links = GetStartUrls(configuration);
@@ -82,7 +82,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="configuration">The configuration.</param>
         /// <returns>A list of hyper links.</returns>
         private static IList<HyperLink> GetStartUrls(
-            CrawlConfiguration configuration)
+            ICrawlConfiguration configuration)
         {
             IList<HyperLink> links = new List<HyperLink>();
             foreach (Uri startUrl in configuration.StartUrls)
@@ -102,7 +102,7 @@ namespace Uncas.WebTester.ApplicationServices
         private static void AddNewLinks(
             IList<HyperLink> links,
             IEnumerable<HyperLink> currentLinks,
-            CrawlConfiguration configuration)
+            ICrawlConfiguration configuration)
         {
             var newLinks = currentLinks.Where(
                 l => !links.Any(l2 => l2.Url == l.Url) &&
@@ -121,7 +121,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="batchNumber">The batch number.</param>
         /// <param name="links">The links.</param>
         private void RunInSequence(
-            CrawlConfiguration configuration,
+            ICrawlConfiguration configuration,
             Guid batchNumber,
             IList<HyperLink> links)
         {
@@ -139,7 +139,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="links">The links.</param>
         /// <param name="maxDegreeOfParallelism">The max degree of parallelism.</param>
         private void RunInParallel(
-            CrawlConfiguration configuration,
+            ICrawlConfiguration configuration,
             Guid batchNumber,
             IList<HyperLink> links,
             int maxDegreeOfParallelism)
@@ -169,7 +169,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="batchNumber">The batch number.</param>
         private void ContinueLoop(
             IList<HyperLink> links,
-            CrawlConfiguration configuration,
+            ICrawlConfiguration configuration,
             Guid batchNumber)
         {
             IList<HyperLink> availableLinks;
@@ -197,7 +197,7 @@ namespace Uncas.WebTester.ApplicationServices
         /// <param name="availableLinks">The available links.</param>
         /// <param name="batchNumber">The batch number.</param>
         private void HandleNextLink(
-            CrawlConfiguration configuration,
+            ICrawlConfiguration configuration,
             IList<HyperLink> links,
             IEnumerable<HyperLink> availableLinks,
             Guid batchNumber)

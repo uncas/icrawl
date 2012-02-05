@@ -6,7 +6,7 @@
 
 namespace Uncas.WebTester.Web.Controllers
 {
-    using System;
+    using System.Globalization;
     using System.Threading;
     using System.Web.Mvc;
 
@@ -16,11 +16,6 @@ namespace Uncas.WebTester.Web.Controllers
     public class RandomController : Controller
     {
         /// <summary>
-        /// Random number generator.
-        /// </summary>
-        private static readonly Random random = new Random();
-
-        /// <summary>
         /// Indexes the specified id.
         /// </summary>
         /// <param name="id">The id of the random subpage.</param>
@@ -28,8 +23,7 @@ namespace Uncas.WebTester.Web.Controllers
         public ActionResult Index(int? id)
         {
             Thread.Sleep(200);
-            string content = string.Format(
-@"
+            string format = @"
 <a href='/Random/Index/{0}0'>0</a>
 <a href='/Random/Index/{0}1'>1</a>
 <a href='/Random/Index/{0}2'>2</a>
@@ -40,7 +34,10 @@ namespace Uncas.WebTester.Web.Controllers
 <a href='/Random/Index/{0}7'>7</a>
 <a href='/Random/Index/{0}8'>8</a>
 <a href='/Random/Index/{0}9'>9</a>
-",
+";
+            string content = string.Format(
+                CultureInfo.InvariantCulture,
+                format,
                 id);
             return Content(content);
         }

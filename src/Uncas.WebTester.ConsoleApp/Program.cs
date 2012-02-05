@@ -76,7 +76,7 @@ namespace Uncas.WebTester.ConsoleApp
             {
                 ICrawlerService crawlerService =
                     this.container.Resolve<ICrawlerService>();
-                CrawlConfiguration configuration =
+                ICrawlConfiguration configuration =
                     CrawlConfigurationParser.ParseArguments(this.commandLineArguments);
                 Console.WriteLine("Crawling...\n {0}", configuration);
                 crawlerService.Crawl(configuration);

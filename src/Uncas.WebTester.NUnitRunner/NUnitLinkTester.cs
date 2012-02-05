@@ -89,7 +89,7 @@ namespace Uncas.WebTester.NUnitRunner
         public void CheckLinks()
         {
             var startUrls = this.GetBaseUrls();
-            var configuration =
+            ICrawlConfiguration configuration =
                 new CrawlConfiguration(
                 startUrls,
                 this.MaxVisits);

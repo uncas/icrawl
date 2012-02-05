@@ -15,6 +15,6 @@ namespace Uncas.WebTester.ApplicationServices
         /// Crawls the website.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        void Crawl(CrawlConfiguration configuration);
+        void Crawl(ICrawlConfiguration configuration);
     }
 }

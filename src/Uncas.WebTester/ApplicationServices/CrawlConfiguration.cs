@@ -16,7 +16,7 @@ namespace Uncas.WebTester.ApplicationServices
     /// <summary>
     /// Configuration for crawling.
     /// </summary>
-    public class CrawlConfiguration
+    public class CrawlConfiguration : ICrawlConfiguration
     {
         /// <summary>
         /// The default maximum number of visits.
