@@ -28,6 +28,11 @@ namespace Uncas.WebTester.NUnitRunner
         private const int MaxVisitsDefault = 10;
 
         /// <summary>
+        /// The object that locks things common for all tests.
+        /// </summary>
+        private readonly object lockObject = new object();
+
+        /// <summary>
         /// The failed links.
         /// </summary>
         private IList<HyperLink> failedLinks = new List<HyperLink>();
@@ -106,12 +111,15 @@ namespace Uncas.WebTester.NUnitRunner
         /// <param name="link">The hyper link.</param>
         public void ProcessResult(HyperLink link)
         {
-            if (!this.IsLinkOk(link))
+            lock (this.lockObject)
             {
-                this.failedLinks.Add(link);
-            }
+                if (!this.IsLinkOk(link))
+                {
+                    this.failedLinks.Add(link);
+                }
 
-            this.testIndex++;
+                this.testIndex++;
+            }
         }
 
         /// <summary>
