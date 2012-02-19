@@ -13,7 +13,6 @@
 
   <!-- External executable locations - depends on environment, can be changed in local.properties.xml -->
   <property name="msbuild" value="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" />
-  <property name="svn" value="C:\Program Files (x86)\VisualSVN Server\bin\svn.exe" />
   <property name="FxCop"
     value="C:\Program Files (x86)\Microsoft FxCop 1.36\FxCopCmd.exe" />
   <property name="appcmd" value="c:\Windows\System32\inetsrv\appcmd" />
@@ -126,16 +125,14 @@
     <echo message="Retrieving Subversion revision number" />
     <property name="svn.revision" value="0" />
     <exec
-      program="${svn}"
-      commandline='log --xml --limit 1 --username buildmaster --password buildmaster123 --no-auth-cache'
-      output="build\revision.xml"
+      program="CountRevisions.cmd"
       failonerror="false" />
-    <xmlpeek
-      file="build\revision.xml"
-      xpath="/log/logentry/@revision"
-      property="svn.revision"
-      failonerror="false" />
-    <echo message="Using Subversion revision number: ${svn.revision}" />
+    <property name="file.contents" value="0" />
+    <loadfile file="build\Revision.txt" property="file.contents" />
+    <property name="file.contents" value="${string::trim(file.contents)}" />
+    <echo message="contents of file is ${file.contents}"/>
+    <property name="svn.revision" value="${file.contents}" />
+    <echo message="Using revision number: ${svn.revision}" />
   </target>
 
   <!-- From http://www.richard-banks.org/2007/06/real-world-cruisecontrolnet-setup.html
