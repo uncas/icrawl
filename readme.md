@@ -8,9 +8,13 @@ Quick start
 Get the latest build here: http://test.uncas.dk/WebTester.htm
 
 Edit Uncas.WebTester.ConsoleApp.exe.config to your settings:
+
 * maxPages: the max number of pages to crawl
+
 * url: start url
+
 * matches: the crawler only visits pages that starts with these urls
+
 * webTesterConnectionString: the connection string to a SQL server
 
 Run Uncas.WebTester.ConsoleApp.exe without arguments which uses the values from the config file.
