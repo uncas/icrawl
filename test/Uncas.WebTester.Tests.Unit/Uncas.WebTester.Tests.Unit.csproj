@@ -42,6 +42,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="ApplicationServices\NullResultServiceTests.cs" />
     <Compile Include="ApplicationServices\ResultServiceTestsBase.cs" />
     <Compile Include="ApplicationServices\ResultServiceTests.cs" />
