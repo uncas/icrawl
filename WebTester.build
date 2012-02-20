@@ -133,6 +133,11 @@
     <echo message="contents of file is ${file.contents}"/>
     <property name="svn.revision" value="${file.contents}" />
     <echo message="Using revision number: ${svn.revision}" />
+
+    <exec program="git" commandline="rev-parse HEAD" output="build\hash.txt" />
+    <loadfile file="build\hash.txt" property="git.hash" />
+    <property name="git.hash" value="${string::trim(git.hash)}" />
+    <echo message="hash of the commit is ${git.hash}"/>
   </target>
 
   <!-- From http://www.richard-banks.org/2007/06/real-world-cruisecontrolnet-setup.html
@@ -251,8 +256,9 @@
       <attributes>
         <attribute type="System.Reflection.AssemblyCompanyAttribute" value="Uncas" />
         <attribute type="System.Reflection.AssemblyProductAttribute" value="Uncas.WebTester" />
-        <attribute type="System.Reflection.AssemblyCopyrightAttribute" value="Copyright (c) 2010, Ole Lynge Sørensen" />
+        <attribute type="System.Reflection.AssemblyCopyrightAttribute" value="Copyright (c) 2012, Ole Lynge Sørensen" />
         <attribute type="System.Reflection.AssemblyVersionAttribute" value="${version.string}" />
+        <attribute type="System.Reflection.AssemblyInformationalVersionAttribute" value="${version.string} (${git.hash})" />
         <attribute type="System.Reflection.AssemblyFileVersionAttribute" value="${version.string}" />
       </attributes>
     </asminfo>
