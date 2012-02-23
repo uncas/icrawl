@@ -18,7 +18,8 @@
   <property name="appcmd" value="c:\Windows\System32\inetsrv\appcmd" />
 
   <!-- Working values and built-in values - need not be changed -->
-  <property name="nunit.executable" value="lib\NUnit\nunit-console.exe" />
+  <property name="nunit.folder" value="packages\NUnit.2.5.10.11092\tools" />
+  <property name="nunit.executable" value="${nunit.folder}\nunit-console.exe" />
   <property name="codemetrics.output.dir" value="build" />
   <property name="sourcemonitor.executable" value="lib\SourceMonitor\SourceMonitor.exe" />
   <property name="website.path" value="${project::get-base-directory()}\src\Uncas.WebTester.Web" />
@@ -105,7 +106,7 @@
       </fileset>
     </copy>
     <copy todir="${test.directory}">
-      <fileset basedir="lib\NUnit">
+      <fileset basedir="${nunit.folder}">
         <include name="**\*.*" />
       </fileset>
     </copy>
