@@ -12,3 +12,4 @@ _ReSharper.*/
 /src/VersionInfo.cs
 test/Uncas.WebTester.Tests.Integration/App.appSettings.config
 *~
+packages/
