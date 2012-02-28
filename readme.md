@@ -1,4 +1,4 @@
-This small project makes it possible to crawl a website and output details about the crawled pages to for example an SQL server database, or in a NUnit test suite.
+This project makes it possible to crawl a website and output details about the crawled pages to for example an SQL server database, or in a NUnit test suite.
 
 For example, it is possible to set the program to crawl 1000 pages as one NUnit test, and fail the test if there are HTTP status codes different from 200 OK.
 
