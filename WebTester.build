@@ -121,10 +121,10 @@
     </if>
   </target>
 
-  <target name="getSubversionRevision" depends="init">
-    <!-- Retrieve subversion revision number -->
-    <echo message="Retrieving Subversion revision number" />
-    <property name="svn.revision" value="0" />
+  <target name="getRevision" depends="init">
+    <!-- Retrieve revision number -->
+    <echo message="Retrieving revision number" />
+    <property name="version.revision" value="0" />
     <exec
       program="CountRevisions.cmd"
       failonerror="false" />
@@ -132,8 +132,8 @@
     <loadfile file="build\Revision.txt" property="file.contents" />
     <property name="file.contents" value="${string::trim(file.contents)}" />
     <echo message="contents of file is ${file.contents}"/>
-    <property name="svn.revision" value="${file.contents}" />
-    <echo message="Using revision number: ${svn.revision}" />
+    <property name="version.revision" value="${file.contents}" />
+    <echo message="Using revision number: ${version.revision}" />
 
     <exec program="git" commandline="rev-parse HEAD" output="build\hash.txt" />
     <loadfile file="build\hash.txt" property="git.hash" />
@@ -143,7 +143,7 @@
 
   <!-- From http://www.richard-banks.org/2007/06/real-world-cruisecontrolnet-setup.html
        and http://www.ridgway.co.za/archive/2006/11/28/usefulsourcemonitorreportsincruisecontrol.aspx -->
-  <target name="SourceMonitor" depends="getSubversionRevision">
+  <target name="SourceMonitor" depends="getRevision">
     <!-- Create input command file -->
     <property name="sourcemonitor.input" value="${codemetrics.output.dir}\sm_xxxx_cmd.xml" />
     <echo file="${sourcemonitor.input}" append="false" failonerror="false">
@@ -157,7 +157,7 @@
         <file_extensions>*.cs|*.Designer.cs,*.feature.cs</file_extensions>
         <source_directory>${project::get-base-directory()}\src</source_directory>
         <include_subdirectories>true</include_subdirectories>
-        <checkpoint_name>${svn.revision}</checkpoint_name>
+        <checkpoint_name>${version.revision}</checkpoint_name>
         <export>
          <export_file>${project::get-base-directory()}\_sm_summary.xml</export_file>
          <export_type>1</export_type>
@@ -165,7 +165,7 @@
        </command>
        <command>
         <project_file>${codemetrics.output.dir}\sm_xxxx.smp</project_file>
-        <checkpoint_name>${svn.revision}</checkpoint_name>
+        <checkpoint_name>${version.revision}</checkpoint_name>
         <export>
          <export_file>${project::get-base-directory()}\_sm_details.xml</export_file>
          <export_type>2</export_type>
@@ -248,11 +248,11 @@
     <echo message="Build, tests, specs, FxCop, and source monitor says OK!" />
   </target>
 
-  <target name="generateVersionInfoFile" depends="getSubversionRevision">
+  <target name="generateVersionInfoFile" depends="getRevision">
     <if test="${property::exists('CCNetLabel')}">
       <property name="version.build" value="${CCNetLabel}" />
     </if>
-    <property name="version.string" value="${version.major}.${version.minor}.${version.build}.${svn.revision}" />
+    <property name="version.string" value="${version.major}.${version.minor}.${version.build}.${version.revision}" />
     <asminfo output="src\VersionInfo.cs" language="CSharp">
       <attributes>
         <attribute type="System.Reflection.AssemblyCompanyAttribute" value="Uncas" />
@@ -269,7 +269,7 @@
     <property name="configuration" value="Release" />
   </target>
 
-  <target name="package" depends="SetReleaseConfiguration,getSubversionRevision,build,packageNoBuild" />
+  <target name="package" depends="SetReleaseConfiguration,getRevision,build,packageNoBuild" />
   <target name="packageNoBuild">
     <property name="package.dir" value="build\Uncas.WebTester" />
     <copy todir="${package.dir}">
