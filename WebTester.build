@@ -16,6 +16,8 @@
   <property name="FxCop"
     value="C:\Program Files (x86)\Microsoft FxCop 1.36\FxCopCmd.exe" />
   <property name="appcmd" value="c:\Windows\System32\inetsrv\appcmd" />
+  <property name="git" value="C:\Program Files (x86)\Git\cmd\git.cmd" />
+  <property name="nuget" value=".nuget\nuget.exe" />
 
   <!-- Working values and built-in values - need not be changed -->
   <property name="nunit.folder" value="packages\NUnit.2.5.10.11092\tools" />
@@ -135,7 +137,7 @@
     <property name="version.revision" value="${file.contents}" />
     <echo message="Using revision number: ${version.revision}" />
 
-    <exec program="git" commandline="rev-parse HEAD" output="build\hash.txt" />
+    <exec program="${git}" commandline="rev-parse HEAD" output="build\hash.txt" />
     <loadfile file="build\hash.txt" property="git.hash" />
     <property name="git.hash" value="${string::trim(git.hash)}" />
     <echo message="hash of the commit is ${git.hash}"/>
@@ -380,6 +382,14 @@ quit
       value="test\${assembly.test.name}\bin\Debug\${assembly.test.name}.dll //l Reports\Coverage.Log //a ${assembly.test.name}" />
     <exec program="${ncover.executable}" commandline="${nunit.executable} /framework=4.0.30319 ${ncover.path.arg}" />
     <style style="{ncover.stylesheet}" out="Reports\${assembly.test.name}-Coverage.html" in="Coverage.xml$" />
+  </target>
+
+  <target name="generateNuGetPackage">
+    <exec program="${nuget}" commandline="pack icrawl.nuspec" />
+  </target>
+
+  <target name="publishNuGetPackage" depends="generateNuGetPackages">
+    <exec program="${nuget}" commandline="push icrawl.${version.string}.nupkg" />
   </target>
 
 </project>
