@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>icrawl</id>
-    <version>1.1</version>
+    <version>$version$</version>
     <title>icrawl</title>
     <authors>Ole Lynge Soerensen</authors>
     <owners>Ole Lynge Soerensen</owners>

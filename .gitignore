@@ -13,3 +13,4 @@ _ReSharper.*/
 test/Uncas.WebTester.Tests.Integration/App.appSettings.config
 *~
 packages/
+*.nupkg
