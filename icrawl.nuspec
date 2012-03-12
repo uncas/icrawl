@@ -9,8 +9,8 @@
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/uncas/icrawl</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>crawls websites</description>
-    <releaseNotes>crawler.</releaseNotes>
+    <description>Crawls websites: Console application and NUnit test project that can be run as other NUnit test projects.</description>
+    <releaseNotes>Crawler tools.</releaseNotes>
     <copyright>Copyright 2012</copyright>
   </metadata>
   <files>
