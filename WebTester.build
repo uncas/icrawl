@@ -7,8 +7,8 @@
   <property name="nesting.limit" value="4" />
   <property name="methods.limit" value="5" />
   <property name="lines.limit" value="200" />
-  <property name="version.major" value="0" />
-  <property name="version.minor" value="2" />
+  <property name="version.major" value="1" />
+  <property name="version.minor" value="0" />
   <property name="version.build" value="0" />
 
   <!-- External executable locations - depends on environment, can be changed in local.properties.xml -->
