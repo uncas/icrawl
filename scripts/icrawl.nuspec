@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>icrawl</id>
+    <version>$version$</version>
+    <title>icrawl</title>
+    <authors>Ole Lynge Soerensen</authors>
+    <owners>Ole Lynge Soerensen</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/uncas/icrawl</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Crawls websites: Console application and NUnit test project that can be run as other NUnit test projects.</description>
+    <releaseNotes>Crawler tools.</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+  </metadata>
+  <files>
+    <file src="..\output\collect\*.*" target="tools" />
+  </files>
+</package>

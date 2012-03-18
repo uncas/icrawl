@@ -16,6 +16,7 @@ properties {
     $test_dir = "$base_dir\test"
     $output_dir = "$base_dir\output"
     $collect_dir = "$output_dir\collect"
+    $script_dir = "$base_dir\scripts"
 
     $solution_file = "$base_dir\Uncas.WebTester.sln"
     $nunit_folder = "$base_dir\packages\NUnit.2.5.10.11092\tools"
@@ -72,7 +73,7 @@ task Collect -depends Test {
 }
 
 task Pack -depends Collect {
-    & $nuget_exe pack "$base_dir\icrawl.nuspec" -Version $script:full_version -OutputDirectory $output_dir
+    & $nuget_exe pack "$script_dir\icrawl.nuspec" -Version $script:full_version -OutputDirectory $output_dir
 }
 
 task Publish -depends Pack {
