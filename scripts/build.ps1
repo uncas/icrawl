@@ -39,7 +39,19 @@ task Compile -depends Init {
 }
 
 task Test -depends Compile {
-    $test_project_name = "Uncas.WebTester.Tests.Unit"
+    Run-Test "Uncas.WebTester.Tests.Unit"
+    Run-Test "Uncas.WebTester.Tests.Integration"
+}
+
+function Run-Test
+{
+param(
+	[string]$test_project_name = $(throw "file is a required parameter.")
+)
     $test_result_file = "$output_dir\$test_project_name.TestResult.xml"
     & $nunit_exe "$base_dir\test\$test_project_name\bin\$configuration\$test_project_name.dll" /xml=$test_result_file
+
+    if ($lastExitCode -ne 0) {
+        throw "One or more failures in tests - see details above."
+    }
 }
