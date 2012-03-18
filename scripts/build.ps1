@@ -25,11 +25,14 @@ properties {
 
 task default -depends Pack
 
-task Init {
+task Clean {
     if (Test-Path $output_dir)
     {
         rmdir -force -recurse $output_dir
     }
+}
+
+task Init -depends Clean {
     if (!(Test-Path $output_dir))
     {
         mkdir $output_dir
