@@ -22,9 +22,13 @@ properties {
     $nunit_folder = "$base_dir\packages\NUnit.2.5.10.11092\tools"
     $nunit_exe = "$nunit_folder\nunit-console.exe"
     $nuget_exe = "$base_dir\.nuget\nuget.exe"
+
+    $websitePort = "963"
+    $websitePath = "$base_dir\src\Uncas.WebTester.Web"
+    $websiteName = "WebTesterWeb"
 }
 
-task default -depends Pack
+task default -depends FxCop,Test,Pack
 
 task Clean {
     if (Test-Path $output_dir)
@@ -33,7 +37,14 @@ task Clean {
     }
 }
 
-task Init -depends Clean {
+task Initialize-ConfigFiles {
+    $sourceFile = "$base_dir\config\IntegrationTests.appSettings.config.template"
+    $targetFile = "$base_dir\test\Uncas.WebTester.Tests.Integration\App.appSettings.config"
+    #Copy-Item $sourceFile $targetFile
+    (cat $sourceFile) -replace '@WebsitePort@', "$websitePort" > $targetFile
+}
+
+task Init -depends Clean,Initialize-ConfigFiles {
     if (!(Test-Path $output_dir))
     {
         mkdir $output_dir
@@ -55,12 +66,29 @@ task Compile -depends Init {
     msbuild $solution_file /p:Configuration=$configuration
 }
 
+task FxCop -depends Compile {
+    $fxcopOutput = "$output_dir\fxcopresults.xml"
+    if (Test-Path $fxcopOutput)
+    {
+        Remove-Item $fxcopOutput
+    }
+    $fxcop = "C:\Program Files (x86)\Microsoft FxCop 10.0\FxCopCmd.exe"
+    & $fxcop "/p:$base_dir\WebTester.FxCop" "/o:${fxcopOutput}" /s
+    if (Test-Path $fxcopOutput)
+    {
+        "FxCop errors encountered"
+        $fxcopDetails = Get-Content $fxcopOutput
+        $fxcopDetails
+        throw "FxCop errors encountered"
+    }
+}
+
 task Test -depends Compile {
     Run-Test "Uncas.WebTester.Tests.Unit" $output_dir
     Run-Test "Uncas.WebTester.Tests.Integration" $output_dir
 }
 
-task Collect -depends Test {
+task Collect -depends Compile {
     copy "$src_dir\Uncas.WebTester.ConsoleApp\bin\Release\Autofac.dll" $collect_dir
     copy "$src_dir\Uncas.WebTester\bin\Release\HtmlAgilityPack.dll" $collect_dir
     copy "$src_dir\Uncas.WebTester.NUnitRunner\bin\Release\nunit.framework.dll" $collect_dir
@@ -76,6 +104,6 @@ task Pack -depends Collect {
     & $nuget_exe pack "$script_dir\icrawl.nuspec" -Version $script:full_version -OutputDirectory $output_dir
 }
 
-task Publish -depends Pack {
+task Publish -depends FxCop,Test,Pack {
     & $nuget_exe push "$output_dir\icrawl.$script:full_version.nupkg"
 }
