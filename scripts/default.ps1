@@ -88,15 +88,17 @@ task Test -depends Compile {
 }
 
 task Collect -depends Compile {
-    copy "$srcDir\Uncas.WebTester.ConsoleApp\bin\Release\Autofac.dll" $collectDir
-    copy "$srcDir\Uncas.WebTester\bin\Release\HtmlAgilityPack.dll" $collectDir
-    copy "$srcDir\Uncas.WebTester.NUnitRunner\bin\Release\nunit.framework.dll" $collectDir
-    copy "$srcDir\Uncas.WebTester.ConsoleApp\bin\Release\Uncas.WebTester.ConsoleApp.exe" $collectDir
-    copy "$srcDir\Uncas.WebTester.ConsoleApp\bin\Release\Uncas.WebTester.ConsoleApp.exe.config" $collectDir
-    copy "$srcDir\Uncas.WebTester\bin\Release\Uncas.WebTester.dll" $collectDir
-    copy "$srcDir\Uncas.WebTester.NUnitRunner\bin\Release\Uncas.WebTester.NUnitRunner.dll" $collectDir
-    copy "$testDir\Uncas.WebTester.Tests.SimpleTestProject\bin\Release\Uncas.WebTester.Tests.SimpleTestProject.dll" $collectDir
-    copy "$testDir\Uncas.WebTester.Tests.SimpleTestProject\bin\Release\Uncas.WebTester.Tests.SimpleTestProject.dll.config" $collectDir
+    $files = @()
+    $files += "$srcDir\Uncas.WebTester.ConsoleApp\bin\Release\Autofac.dll"
+    $files += "$srcDir\Uncas.WebTester.ConsoleApp\bin\Release\Uncas.WebTester.ConsoleApp.exe"
+    $files += "$srcDir\Uncas.WebTester.ConsoleApp\bin\Release\Uncas.WebTester.ConsoleApp.exe.config"
+    $files += "$srcDir\Uncas.WebTester.NUnitRunner\bin\Release\Uncas.WebTester.NUnitRunner.dll"
+    $files += "$srcDir\Uncas.WebTester.NUnitRunner\bin\Release\nunit.framework.dll"
+    $files += "$srcDir\Uncas.WebTester\bin\Release\HtmlAgilityPack.dll"
+    $files += "$srcDir\Uncas.WebTester\bin\Release\Uncas.WebTester.dll"
+    $files += "$testDir\Uncas.WebTester.Tests.SimpleTestProject\bin\Release\Uncas.WebTester.Tests.SimpleTestProject.dll"
+    $files += "$testDir\Uncas.WebTester.Tests.SimpleTestProject\bin\Release\Uncas.WebTester.Tests.SimpleTestProject.dll.config"
+    copy $files $collectDir
 }
 
 task Pack -depends Collect {
