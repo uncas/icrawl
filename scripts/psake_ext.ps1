@@ -23,9 +23,9 @@ param(
 )
   $commit = Get-Git-Commit
   $commitCount = Get-Git-CommitCount
-  $full_version = "$version.$commitCount"
-  $script:full_version = $full_version
-  "Version $full_version (commit hash: $commit, commit log count: $commitCount)"
+  $fullVersion = "$version.$commitCount"
+  $script:fullVersion = $fullVersion
+  "Version $fullVersion (commit hash: $commit, commit log count: $commitCount)"
   $asmInfo = "using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -34,9 +34,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompanyAttribute(""$company"")]
 [assembly: AssemblyProductAttribute(""$product"")]
 [assembly: AssemblyCopyrightAttribute(""$copyright"")]
-[assembly: AssemblyVersionAttribute(""$full_version"")]
-[assembly: AssemblyInformationalVersionAttribute(""$full_version ($commit)"")]
-[assembly: AssemblyFileVersionAttribute(""$full_version"")]
+[assembly: AssemblyVersionAttribute(""$fullVersion"")]
+[assembly: AssemblyInformationalVersionAttribute(""$fullVersion ($commit)"")]
+[assembly: AssemblyFileVersionAttribute(""$fullVersion"")]
 [assembly: AssemblyDelaySignAttribute(false)]
 "
 
@@ -53,12 +53,12 @@ using System.Runtime.InteropServices;
 function Run-Test
 {
     param(
-        [string]$test_project_name = $(throw "file is a required parameter."),
-        [string]$out_dir = $(throw "out dir is a required parameter.")
+        [string]$testProjectName = $(throw "file is a required parameter."),
+        [string]$outDir = $(throw "out dir is a required parameter.")
     )
 
-    $test_result_file = "$out_dir\$test_project_name.TestResult.xml"
-    & $nunit_exe "$base_dir\test\$test_project_name\bin\$configuration\$test_project_name.dll" /xml=$test_result_file
+    $testResultFile = "$outDir\$testProjectName.TestResult.xml"
+    & $nunitExe "$baseDir\test\$testProjectName\bin\$configuration\$testProjectName.dll" /xml=$testResultFile
 
     if ($lastExitCode -ne 0) {
         throw "One or more failures in tests - see details above."
