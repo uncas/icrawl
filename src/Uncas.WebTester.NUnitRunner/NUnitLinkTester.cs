@@ -4,18 +4,17 @@
 // </copyright>
 //-------------
 
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Linq;
-
 namespace Uncas.WebTester.NUnitRunner
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
+    using System.Linq;
     using System.Net;
     using System.Text;
+    using System.Threading;
     using NUnit.Framework;
     using Uncas.WebTester.ApplicationServices;
     using Uncas.WebTester.Models;
@@ -31,11 +30,6 @@ namespace Uncas.WebTester.NUnitRunner
         /// </summary>
         private const int MaxVisitsDefault = 10;
 
-        /// <summary>
-        /// The object that locks things common for all tests.
-        /// </summary>
-        private readonly object lockObject = new object();
-        
         /// <summary>
         /// Contains all links
         /// </summary>
