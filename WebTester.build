@@ -390,7 +390,7 @@ quit
   </target>
 
   <target name="generateNuGetPackage" depends="test">
-    <exec program="${nuget}" commandline="pack icrawl.nuspec -Version ${version.string}" />
+    <exec program="${nuget}" commandline="pack scripts\icrawl.nuspec -Version ${version.string}" />
   </target>
 
   <target name="publishNuGetPackage" depends="generateNuGetPackage">

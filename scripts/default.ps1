@@ -1,4 +1,4 @@
-$framework = '4.0'
+$framework = '4.0x64'
 
 . .\psake_ext.ps1
 
