@@ -4,6 +4,10 @@
 // </copyright>
 //-------------
 
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Linq;
+
 namespace Uncas.WebTester.NUnitRunner
 {
     using System;
@@ -31,11 +35,11 @@ namespace Uncas.WebTester.NUnitRunner
         /// The object that locks things common for all tests.
         /// </summary>
         private readonly object lockObject = new object();
-
+        
         /// <summary>
-        /// The failed links.
+        /// Contains all links
         /// </summary>
-        private IList<HyperLink> failedLinks = new List<HyperLink>();
+        private readonly ConcurrentStack<HyperLink> allLinks = new ConcurrentStack<HyperLink>();
 
         /// <summary>
         /// The crawler service.
@@ -45,7 +49,7 @@ namespace Uncas.WebTester.NUnitRunner
         /// <summary>
         /// The text index.
         /// </summary>
-        private int testIndex;
+        private int testIndex; 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NUnitLinkTester"/> class.
@@ -82,12 +86,14 @@ namespace Uncas.WebTester.NUnitRunner
             }
         }
 
+
         /// <summary>
-        /// Checks the links.
+        /// Get links for check
         /// </summary>
-        [Test]
-        public void CheckLinks()
+        /// <returns></returns>
+        public IEnumerable<TestCaseData> GetLinks()
         {
+            //return new TestCaseData[]{ new TestCaseData(new HyperLink(new Uri("http://www.google.dk")))};
             var startUrls = this.GetBaseUrls();
             ICrawlConfiguration configuration =
                 new CrawlConfiguration(
@@ -95,14 +101,16 @@ namespace Uncas.WebTester.NUnitRunner
                 this.MaxVisits);
             Console.WriteLine("Testing {0} pages on {1}:", this.MaxVisits, startUrls[0].AbsoluteUri);
             this.crawlerService.Crawl(configuration);
-            if (this.failedLinks.Count > 0)
-            {
-                this.WriteFailure();
-            }
-            else
-            {
-                Console.WriteLine("All pages were OK!");
-            }
+            return this.allLinks.Select(x => new TestCaseData(x));
+        }
+
+        /// <summary>
+        /// Checks the links.
+        /// </summary>
+        [TestCaseSource("GetLinks")]
+        public void CheckLinks(HyperLink link)
+        {
+            Assert.That(IsLinkOk(link), "{0}: {1}", link.StatusCode, link.Url.AbsoluteUri);
         }
 
         /// <summary>
@@ -111,15 +119,8 @@ namespace Uncas.WebTester.NUnitRunner
         /// <param name="link">The hyper link.</param>
         public void ProcessResult(HyperLink link)
         {
-            lock (this.lockObject)
-            {
-                if (!this.IsLinkOk(link))
-                {
-                    this.failedLinks.Add(link);
-                }
-
-                this.testIndex++;
-            }
+            this.allLinks.Push(link);
+            Interlocked.Increment(ref this.testIndex);
         }
 
         /// <summary>
@@ -131,24 +132,6 @@ namespace Uncas.WebTester.NUnitRunner
             "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This might involve a database call or other long-running calls.")]
         protected abstract IList<Uri> GetBaseUrls();
-
-        /// <summary>
-        /// Writes the failure.
-        /// </summary>
-        private void WriteFailure()
-        {
-            var messageBuilder = new StringBuilder("There were failed pages:");
-            foreach (var page in this.failedLinks)
-            {
-                messageBuilder.AppendFormat(
-                    "{0}{1}: {2}",
-                    Environment.NewLine,
-                    page.StatusCode,
-                    page.Url.AbsoluteUri);
-            }
-
-            Assert.Fail(messageBuilder.ToString());
-        }
 
         /// <summary>
         /// Links the should be ok.
